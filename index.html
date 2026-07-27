@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SPINIX | Golden Tower</title>
     <style>
+        /* ===== كل الـ CSS السابق ===== */
         * {
             margin: 0;
             padding: 0;
@@ -116,13 +117,14 @@
         .game-wrapper {
             width: 100%;
             height: 100%;
-            display: flex;
+            display: none; /* ✅ يبدأ مخفياً */
             flex-direction: column;
             opacity: 0;
             transition: opacity 0.8s ease;
             pointer-events: none;
         }
         .game-wrapper.visible {
+            display: flex;
             opacity: 1;
             pointer-events: auto;
         }
@@ -192,7 +194,7 @@
             position: relative;
             background: radial-gradient(ellipse at center bottom, #1a2a4a 0%, #0a0e27 100%);
             overflow: hidden;
-            min-height: 0;
+            min-height: 200px; /* ✅ ضمان ارتفاع */
         }
 
         .stars-container {
@@ -225,6 +227,7 @@
             position: relative;
             z-index: 1;
             cursor: pointer;
+            background: rgba(0,0,0,0.1); /* ✅ خلفية مؤقتة للتأكد من ظهور الكانفاس */
         }
 
         .speed-indicator {
@@ -568,16 +571,6 @@
             overflow-y: auto;
             padding: 20px;
             animation: modalPop 0.3s ease;
-        }
-        .stats-modal-content::-webkit-scrollbar {
-            width: 4px;
-        }
-        .stats-modal-content::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .stats-modal-content::-webkit-scrollbar-thumb {
-            background: rgba(255, 215, 0, 0.3);
-            border-radius: 10px;
         }
 
         .stats-modal-header {
@@ -942,6 +935,7 @@
 </head>
 <body>
 
+<!-- شاشة التحميل -->
 <div id="loadingScreen" class="loading-screen">
     <div class="loading-container">
         <div class="spinix-logo-loading">SPINIX</div>
@@ -957,6 +951,7 @@
     </div>
 </div>
 
+<!-- حاوية اللعبة -->
 <div id="gameWrapper" class="game-wrapper">
     <div class="game-header">
         <div class="header-logo">🏗️ SPINIX | GOLDEN TOWER</div>
@@ -974,6 +969,7 @@
         <canvas id="gameCanvas"></canvas>
         <div class="speed-indicator" id="speedIndicator">⚡ 0.000</div>
 
+        <!-- Teaser -->
         <div class="teaser-overlay" id="teaserOverlay">
             <div class="teaser-content">
                 <div class="teaser-tower-icon">🏗️</div>
@@ -1000,6 +996,7 @@
             </div>
         </div>
 
+        <!-- اختيار الرهان -->
         <div id="betSelectionOverlay" class="bet-selection-overlay">
             <div class="bet-selection-container">
                 <div class="bet-selection-title">✨ اختر رهانك ✨</div>
@@ -1028,8 +1025,10 @@
     </div>
 </div>
 
+<!-- الإشعارات -->
 <div id="notificationContainer" class="notification-container"></div>
 
+<!-- مودال الإحصائيات -->
 <div id="statsModal" class="stats-modal">
     <div class="stats-modal-content">
         <div class="stats-modal-header">
@@ -1046,6 +1045,7 @@
     </div>
 </div>
 
+<!-- خطأ المستخدم -->
 <div class="error-container" id="errorContainer">
     <div class="error-icon">⚠️</div>
     <div class="error-title">يجب الدخول من البوت</div>
@@ -1060,7 +1060,7 @@
     // ================================================================
     //                      الإعدادات الأساسية
     // ================================================================
-    const API_BASE = 'https://kok-mopm.onrender.com';
+    const API_BASE = 'https://kok-mopm.onrender.com'; // ✅ ضع رابط الخادم الخاص بك
     const ADMIN_ID = 7011476249;
 
     let USER_ID = null;
@@ -1127,26 +1127,36 @@
     function getUserId() {
         const params = new URLSearchParams(window.location.search);
         let id = params.get('user_id') || params.get('userId') || params.get('id');
+        
         if (id && !isNaN(id)) {
             USER_ID = parseInt(id);
             localStorage.setItem('spinix_user_id', USER_ID);
+            console.log('✅ USER_ID من الرابط:', USER_ID);
             return USER_ID;
         }
+        
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 const user = window.Telegram.WebApp.initDataUnsafe?.user;
                 if (user && user.id) {
                     USER_ID = user.id;
                     localStorage.setItem('spinix_user_id', USER_ID);
+                    console.log('✅ USER_ID من Telegram:', USER_ID);
                     return USER_ID;
                 }
             }
-        } catch (e) {}
+        } catch (e) {
+            console.warn('Telegram WebApp not available');
+        }
+        
         id = localStorage.getItem('spinix_user_id');
         if (id) {
             USER_ID = parseInt(id);
+            console.log('✅ USER_ID من localStorage:', USER_ID);
             return USER_ID;
         }
+        
+        console.error('❌ لا يمكن الحصول على USER_ID');
         return null;
     }
 
@@ -1216,6 +1226,7 @@
             star.style.animationDelay = (Math.random() * 5) + 's';
             container.appendChild(star);
         }
+        console.log('✅ تم إنشاء النجوم');
     }
 
     // ================================================================
@@ -1532,7 +1543,7 @@
     }
 
     // ================================================================
-    //                      دوال الرسم (Canvas)
+    //                      دوال الرسم (Canvas) - مُصلحة بالكامل
     // ================================================================
     let canvas, ctx;
     let cameraY = 0;
@@ -1567,30 +1578,73 @@
 
     let floorImage = new Image();
     let imageLoaded = false;
-    floorImage.onload = () => { imageLoaded = true; };
-    floorImage.onerror = () => { imageLoaded = true; };
-    floorImage.src = 'https://i.imgur.com/3zW7n8A.png';
+    floorImage.onload = () => { 
+        imageLoaded = true; 
+        console.log('✅ صورة الطوابق تم تحميلها');
+    };
+    floorImage.onerror = () => { 
+        imageLoaded = true; 
+        console.warn('⚠️ فشل تحميل صورة الطوابق، سيتم استخدام الألوان');
+    };
+    floorImage.src = 'https://i.postimg.cc/4xgFPsZ3/6c6603f0-8557-11f1-b3b3-c1f91893a2ea.png';
 
+    // ✅ دالة تهيئة الكانفاس - مُصلحة
     function initCanvas() {
+        console.log('🎨 تهيئة الكانفاس...');
         canvas = document.getElementById('gameCanvas');
+        
+        if (!canvas) {
+            console.error('❌ لم يتم العثور على عنصر canvas!');
+            return false;
+        }
+        
         ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+            console.error('❌ فشل الحصول على سياق الرسم!');
+            return false;
+        }
+        
+        console.log('✅ تم الحصول على canvas و context');
+        
+        // ✅ ضمان الحجم الصحيح
         resizeCanvas();
+        
+        // ✅ إضافة مستمع تغيير الحجم
         window.addEventListener('resize', resizeCanvas);
+        
+        return true;
     }
 
+    // ✅ دالة تغيير الحجم - مُصلحة
     function resizeCanvas() {
-        const rect = canvas.parentElement.getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = rect.height;
+        if (!canvas) return;
+        
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        
+        const rect = parent.getBoundingClientRect();
+        const width = rect.width || window.innerWidth;
+        const height = rect.height || (window.innerHeight - 150);
+        
+        console.log(`📐 تغيير حجم الكانفاس: ${width}x${height}`);
+        
+        canvas.width = Math.max(width, 100);
+        canvas.height = Math.max(height, 100);
+        
+        // ✅ إعادة رسم بعد تغيير الحجم
         addGround();
         updatePivotPosition();
         draw();
     }
 
+    // ✅ دوال الرسم الأساسية
     function addGround() {
         if (!canvas) return;
-        let groundY = canvas.height - 48;
-        let groundX = canvas.width / 2 - 105;
+        
+        const groundY = canvas.height - 48;
+        const groundX = canvas.width / 2 - 105;
+        
         ground = { x: groundX, y: groundY, w: 210, h: 26 };
         builtFloors = [{
             x: groundX + ground.w / 2,
@@ -1600,6 +1654,8 @@
             floorNumber: 0,
             isGround: true
         }];
+        
+        console.log('✅ تم إضافة الأرض');
     }
 
     function updatePivotPosition() {
@@ -1621,6 +1677,7 @@
         addGround();
         updatePivotPosition();
         draw();
+        console.log('✅ تم إعادة تعيين حالة اللعبة');
     }
 
     function updateSwingPosition() {
@@ -1664,6 +1721,8 @@
     }
 
     function drawFloor(x, y, w, h, floorNum, isGround = false) {
+        if (!ctx) return;
+        
         if (isGround) {
             ctx.fillStyle = "#3a2a1a";
             ctx.shadowBlur = 4;
@@ -1697,47 +1756,63 @@
         ctx.shadowBlur = 0;
     }
 
+    // ✅ دالة الرسم الرئيسية - مُصلحة
     function draw() {
-        if (!ctx || !canvas) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        grad.addColorStop(0, "#0a0e27");
-        grad.addColorStop(0.3, "#1a1a3e");
-        grad.addColorStop(0.6, "#0f1a2e");
-        grad.addColorStop(1, "#0a0e27");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.save();
-        ctx.translate(0, -cameraY);
-
-        for (let f of builtFloors) {
-            drawFloor(f.x, f.y, f.w, f.h, f.floorNumber, f.isGround);
+        if (!ctx || !canvas) {
+            console.warn('⚠️ draw: canvas أو ctx غير جاهز');
+            return;
         }
 
-        if (gameActive && !waitingForLanding && !isFalling && currentFloor < MAX_FLOOR) {
-            ctx.beginPath();
-            ctx.moveTo(swinging.pivotX, swinging.pivotY);
-            ctx.lineTo(swinging.x, swinging.y - swinging.h / 2 + 5);
-            ctx.strokeStyle = "rgba(255,215,0,0.4)";
-            ctx.lineWidth = 2;
-            ctx.stroke();
+        try {
+            // مسح الكانفاس
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            drawFloor(swinging.x, swinging.y, swinging.w, swinging.h, currentFloor + 1, false);
+            // خلفية متدرجة
+            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, "#0a0e27");
+            grad.addColorStop(0.3, "#1a1a3e");
+            grad.addColorStop(0.6, "#0f1a2e");
+            grad.addColorStop(1, "#0a0e27");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.beginPath();
-            ctx.arc(swinging.pivotX, swinging.pivotY, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = "#FFD700";
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = "rgba(255,215,0,0.3)";
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        } else if (isFalling) {
-            drawFloor(fallPosX, fallPosY, fallW, fallH, fallFloorNum, false);
+            // رسم الطوابق
+            ctx.save();
+            ctx.translate(0, -cameraY);
+
+            for (let f of builtFloors) {
+                drawFloor(f.x, f.y, f.w, f.h, f.floorNumber, f.isGround);
+            }
+
+            if (gameActive && !waitingForLanding && !isFalling && currentFloor < MAX_FLOOR) {
+                // الحبل
+                ctx.beginPath();
+                ctx.moveTo(swinging.pivotX, swinging.pivotY);
+                ctx.lineTo(swinging.x, swinging.y - swinging.h / 2 + 5);
+                ctx.strokeStyle = "rgba(255,215,0,0.4)";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // الطابق المتأرجح
+                drawFloor(swinging.x, swinging.y, swinging.w, swinging.h, currentFloor + 1, false);
+
+                // نقطة التعليق
+                ctx.beginPath();
+                ctx.arc(swinging.pivotX, swinging.pivotY, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = "#FFD700";
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = "rgba(255,215,0,0.3)";
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            } else if (isFalling) {
+                drawFloor(fallPosX, fallPosY, fallW, fallH, fallFloorNum, false);
+            }
+
+            ctx.restore();
+            
+        } catch (error) {
+            console.error('❌ خطأ في الرسم:', error);
         }
-
-        ctx.restore();
     }
 
     function gameLoop() {
@@ -2054,15 +2129,20 @@
     }
 
     // ================================================================
-    //                      تهيئة اللعبة
+    //                      تهيئة اللعبة - مُصلحة بالكامل
     // ================================================================
     async function initGame() {
         try {
+            console.log('🚀 بدء تهيئة اللعبة...');
+            
             updateProgress(10, 'جاري إنشاء الخلفية...');
             createStars();
 
             updateProgress(20, 'جاري تهيئة الرسومات...');
-            initCanvas();
+            const canvasReady = initCanvas();
+            if (!canvasReady) {
+                throw new Error('فشل تهيئة الكانفاس');
+            }
             resetGameState();
 
             updateProgress(30, 'جاري تحميل الإعدادات...');
@@ -2077,8 +2157,11 @@
             }
             updateProgress(40, 'تم التحقق من المستخدم');
 
-            document.getElementById('gameWrapper').style.display = 'flex';
-            updateProgress(50, 'جاري تجهيز الواجهة...');
+            // ✅ إظهار اللعبة
+            const wrapper = document.getElementById('gameWrapper');
+            wrapper.style.display = 'flex';
+            wrapper.classList.add('visible');
+            updateProgress(50, 'تم تجهيز الواجهة');
 
             updateProgress(60, 'جاري تحميل حالة اللعبة...');
             await loadGameState();
@@ -2087,6 +2170,8 @@
             gameLoop();
 
             updateProgress(80, 'جاري تهيئة الأزرار...');
+            
+            // ✅ إعداد الأزرار
             document.getElementById('startGameBtn').addEventListener('click', startGame);
             document.getElementById('dropButton').addEventListener('click', attemptDrop);
             document.getElementById('cashoutButton').addEventListener('click', cashout);
@@ -2104,6 +2189,7 @@
                 isAdmin = true;
             }
 
+            // ✅ تحديث الرهان في الواجهة
             const betGrid = document.getElementById('betSelectionGrid');
             betGrid.innerHTML = `
                 <div class="bet-selection-chip selected" style="grid-column: span 3; font-size:22px; padding:18px;">
@@ -2114,16 +2200,26 @@
             updateProgress(100, 'تم التحميل بنجاح!');
             isGameReady = true;
 
+            // ✅ إخفاء شاشة التحميل
             setTimeout(() => {
                 showLoading(false);
             }, 500);
 
+            // ✅ التحقق الدوري من الإيداع
             setInterval(checkDepositStatus, 30000);
 
+            console.log('✅ تم تهيئة اللعبة بنجاح!');
+
         } catch (error) {
-            console.error('Init error:', error);
+            console.error('❌ خطأ في التهيئة:', error);
             updateProgress(100, '⚠️ فشل التحميل: ' + error.message);
             showNotification('⚠️ فشل تحميل اللعبة: ' + error.message, 'error');
+            
+            // ✅ محاولة عرض اللعبة حتى مع الخطأ
+            const wrapper = document.getElementById('gameWrapper');
+            wrapper.style.display = 'flex';
+            wrapper.classList.add('visible');
+            showLoading(false);
         }
     }
 
@@ -2131,6 +2227,8 @@
     //                      بدء التشغيل
     // ================================================================
     document.addEventListener('DOMContentLoaded', () => {
+        console.log('📄 تم تحميل الصفحة');
+        
         let progress = 0;
         const interval = setInterval(() => {
             progress += Math.random() * 8;
@@ -2143,6 +2241,7 @@
             updateProgress(90, 'جاري تجهيز اللعبة...');
             await new Promise(r => setTimeout(r, 400));
 
+            // ✅ انتظار تحميل الصورة
             if (!imageLoaded) {
                 await new Promise(r => setTimeout(r, 500));
             }
