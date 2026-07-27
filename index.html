@@ -3,646 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SPINIX | Golden Tower</title>
+    <title>SPINIX | Golden Tower + Admin</title>
     <style>
-        /* ================================================================
-           CSS المتقدم مع دعم المؤثرات الصوتية والبصرية
-           ================================================================ */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', 'Poppins', 'Cairo', system-ui, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 40%, #0f1a2e 100%);
-            color: #fff;
-        }
+        /* ===== أنماط اللعبة (نفس الأنماط السابقة) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', 'Poppins', 'Cairo', system-ui, sans-serif; }
+        body { background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 40%, #0f1a2e 100%); color: #fff; }
 
         /* ===== شاشة التحميل ===== */
-        .loading-screen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 40%, #0f1a2e 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease;
-        }
-        .loading-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .loading-container {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinix-logo-loading {
-            font-size: 72px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #FFD700, #FF6B35, #FFD700);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: logoGlow 2.5s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes logoGlow {
-            0%, 100% { background-position: 0% 50%; transform: scale(1); }
-            50% { background-position: 100% 50%; transform: scale(1.08); }
-        }
-
-        .loading-subtitle {
-            font-size: 18px;
-            color: rgba(255, 215, 0, 0.6);
-            letter-spacing: 4px;
-            margin-bottom: 30px;
-        }
-
-        .loading-spinner-gold {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 215, 0, 0.1);
-            border-top: 3px solid #FFD700;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 20px auto;
-        }
-
-        .progress-container {
-            width: 280px;
-            margin: 20px auto;
-        }
-
-        .progress-bar-outer {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 215, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar-inner {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FF6B35);
-            width: 0%;
-            transition: width 0.4s ease;
-            border-radius: 10px;
-        }
-
-        .progress-percentage {
-            font-size: 13px;
-            color: rgba(255, 215, 0, 0.5);
-            margin-top: 8px;
-            font-weight: 600;
-        }
-
-        .loading-status {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.3);
-            margin-top: 12px;
-        }
+        .loading-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 40%, #0f1a2e 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease; }
+        .loading-screen.hidden { opacity: 0; pointer-events: none; }
+        .loading-container { text-align: center; padding: 20px; }
+        .spinix-logo-loading { font-size: 72px; font-weight: 900; background: linear-gradient(135deg, #FFD700, #FF6B35, #FFD700); background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: logoGlow 2.5s ease-in-out infinite; margin-bottom: 20px; }
+        @keyframes logoGlow { 0%, 100% { background-position: 0% 50%; transform: scale(1); } 50% { background-position: 100% 50%; transform: scale(1.08); } }
+        .loading-subtitle { font-size: 18px; color: rgba(255, 215, 0, 0.6); letter-spacing: 4px; margin-bottom: 30px; }
+        .loading-spinner-gold { width: 50px; height: 50px; border: 3px solid rgba(255, 215, 0, 0.1); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+        .progress-container { width: 280px; margin: 20px auto; }
+        .progress-bar-outer { width: 100%; height: 4px; background: rgba(255, 215, 0, 0.1); border-radius: 10px; overflow: hidden; }
+        .progress-bar-inner { height: 100%; background: linear-gradient(90deg, #FFD700, #FF6B35); width: 0%; transition: width 0.4s ease; border-radius: 10px; }
+        .progress-percentage { font-size: 13px; color: rgba(255, 215, 0, 0.5); margin-top: 8px; font-weight: 600; }
+        .loading-status { font-size: 11px; color: rgba(255, 255, 255, 0.3); margin-top: 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* ===== حاوية اللعبة ===== */
-        .game-wrapper {
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            pointer-events: none;
-        }
-        .game-wrapper.visible {
-            display: flex;
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .game-wrapper { width: 100%; height: 100%; display: none; flex-direction: column; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+        .game-wrapper.visible { display: flex; opacity: 1; pointer-events: auto; }
 
         /* ===== الهيدر ===== */
-        .game-header {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(26, 26, 62, 0.5));
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
-            padding: 10px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-
-        .header-logo {
-            font-size: 18px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 1px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-balance {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 215, 0, 0.08);
-            padding: 5px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 215, 0, 0.15);
-        }
-        .header-balance-value {
-            font-size: 15px;
-            font-weight: 800;
-            color: #FFD700;
-        }
-
-        .admin-stats-btn {
-            background: rgba(52, 152, 219, 0.15);
-            border: 1px solid rgba(52, 152, 219, 0.3);
-            color: #3498db;
-            padding: 4px 12px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .admin-stats-btn:hover {
-            background: #3498db;
-            color: #fff;
-        }
+        .game-header { background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(26, 26, 62, 0.5)); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 215, 0, 0.1); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 10; }
+        .header-logo { font-size: 18px; font-weight: 900; background: linear-gradient(135deg, #FFD700, #FF6B35); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: 1px; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .header-balance { display: flex; align-items: center; gap: 6px; background: rgba(255, 215, 0, 0.08); padding: 5px 14px; border-radius: 30px; border: 1px solid rgba(255, 215, 0, 0.15); }
+        .header-balance-value { font-size: 15px; font-weight: 800; color: #FFD700; }
+        .admin-stats-btn { background: rgba(52, 152, 219, 0.15); border: 1px solid rgba(52, 152, 219, 0.3); color: #3498db; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s; font-family: inherit; }
+        .admin-stats-btn:hover { background: #3498db; color: #fff; }
+        .admin-full-btn { background: rgba(255, 215, 0, 0.15); border: 1px solid rgba(255, 215, 0, 0.3); color: #FFD700; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s; font-family: inherit; }
+        .admin-full-btn:hover { background: #FFD700; color: #000; }
 
         /* ===== منطقة الرسم ===== */
-        .game-canvas-area {
-            flex: 1;
-            position: relative;
-            background: radial-gradient(ellipse at center bottom, #1a2a4a 0%, #0a0e27 100%);
-            overflow: hidden;
-            min-height: 200px;
-        }
+        .game-canvas-area { flex: 1; position: relative; background: radial-gradient(ellipse at center bottom, #1a2a4a 0%, #0a0e27 100%); overflow: hidden; min-height: 200px; }
+        .stars-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .star { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; animation: twinkle var(--duration) ease-in-out infinite alternate; }
+        @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
+        canvas { display: block; width: 100%; height: 100%; position: relative; z-index: 1; cursor: pointer; background: rgba(0,0,0,0.1); }
 
-        .stars-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #fff;
-            border-radius: 50%;
-            animation: twinkle var(--duration) ease-in-out infinite alternate;
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            z-index: 1;
-            cursor: pointer;
-            background: rgba(0,0,0,0.1);
-        }
-
-        /* ===== المؤشرات ===== */
-        .speed-indicator {
-            position: absolute;
-            bottom: 80px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            color: #FFD700;
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            pointer-events: none;
-            z-index: 5;
-            font-weight: 600;
-        }
+        .speed-indicator { position: absolute; bottom: 80px; right: 12px; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 20px; font-size: 10px; color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.1); pointer-events: none; z-index: 5; font-weight: 600; }
 
         /* ===== تأثيرات ===== */
-        .dust-effect {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10;
-            animation: dustExpand 0.7s ease-out forwards;
-        }
-        @keyframes dustExpand {
-            0% { transform: scale(0.3); opacity: 0.8; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
+        .dust-effect { position: absolute; width: 60px; height: 60px; background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, transparent 70%); border-radius: 50%; pointer-events: none; z-index: 10; animation: dustExpand 0.7s ease-out forwards; }
+        @keyframes dustExpand { 0% { transform: scale(0.3); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } }
+        .multiplier-popup { position: absolute; font-size: 52px; font-weight: 900; background: linear-gradient(135deg, #FFD700, #FF6B35); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 40px rgba(255, 215, 0, 0.3); white-space: nowrap; pointer-events: none; z-index: 10; animation: multiplierFloat 1.4s ease-out forwards; }
+        @keyframes multiplierFloat { 0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; } 30% { transform: translate(-50%, -70%) scale(1.4); opacity: 1; } 100% { transform: translate(-50%, -130%) scale(1.8); opacity: 0; } }
+        .shake { animation: shakeAnim 0.35s ease-in-out 0s 2; }
+        @keyframes shakeAnim { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(4px, 3px); } 75% { transform: translate(-4px, -3px); } }
 
-        .multiplier-popup {
-            position: absolute;
-            font-size: 52px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 10;
-            animation: multiplierFloat 1.4s ease-out forwards;
-        }
-        @keyframes multiplierFloat {
-            0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
-            30% { transform: translate(-50%, -70%) scale(1.4); opacity: 1; }
-            100% { transform: translate(-50%, -130%) scale(1.8); opacity: 0; }
-        }
+        .win-flash { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; background: radial-gradient(circle at center, rgba(255, 215, 0, 0.15), transparent 70%); opacity: 0; animation: winFlash 0.8s ease-out forwards; }
+        @keyframes winFlash { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 0.5; } 100% { opacity: 0; } }
+        .lose-flash { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; background: radial-gradient(circle at center, rgba(231, 76, 60, 0.15), transparent 70%); opacity: 0; animation: loseFlash 0.6s ease-out forwards; }
+        @keyframes loseFlash { 0% { opacity: 0; } 30% { opacity: 0.8; } 100% { opacity: 0; } }
 
-        .shake {
-            animation: shakeAnim 0.35s ease-in-out 0s 2;
-        }
-        @keyframes shakeAnim {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(4px, 3px); }
-            75% { transform: translate(-4px, -3px); }
-        }
-
-        /* ===== فلاش الفوز ===== */
-        .win-flash {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 2;
-            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.15), transparent 70%);
-            opacity: 0;
-            animation: winFlash 0.8s ease-out forwards;
-        }
-        @keyframes winFlash {
-            0% { opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 0.5; }
-            100% { opacity: 0; }
-        }
-
-        .lose-flash {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 2;
-            background: radial-gradient(circle at center, rgba(231, 76, 60, 0.15), transparent 70%);
-            opacity: 0;
-            animation: loseFlash 0.6s ease-out forwards;
-        }
-        @keyframes loseFlash {
-            0% { opacity: 0; }
-            30% { opacity: 0.8; }
-            100% { opacity: 0; }
-        }
-
-        /* ===== كونفيتي ===== */
-        .confetti-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 3;
-            overflow: hidden;
-        }
-        .confetti-piece {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            opacity: 0;
-            animation: confettiFall 2s ease-in forwards;
-        }
-        @keyframes confettiFall {
-            0% { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); }
-            100% { opacity: 0; transform: translateY(120vh) rotate(720deg) scale(0.3); }
-        }
+        .confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; overflow: hidden; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; opacity: 0; animation: confettiFall 2s ease-in forwards; }
+        @keyframes confettiFall { 0% { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); } 100% { opacity: 0; transform: translateY(120vh) rotate(720deg) scale(0.3); } }
 
         /* ===== طبقة اختيار الرهان ===== */
-        .bet-selection-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(16px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            transition: all 0.4s ease;
-        }
-        .bet-selection-overlay.hidden {
-            display: none;
-        }
-
-        .bet-selection-container {
-            text-align: center;
-            padding: 30px 24px;
-            background: linear-gradient(145deg, rgba(30, 30, 60, 0.95), rgba(20, 20, 50, 0.95));
-            border-radius: 30px;
-            border: 2px solid rgba(255, 215, 0, 0.2);
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.1);
-            width: 92%;
-            max-width: 400px;
-            animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        @keyframes modalPop {
-            0% { transform: scale(0.85) translateY(20px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-
-        .bet-selection-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #FFD700;
-            margin-bottom: 6px;
-        }
-        .bet-selection-sub {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.3);
-            margin-bottom: 20px;
-        }
-
-        .bet-selection-chip {
-            background: rgba(255, 215, 0, 0.05);
-            border: 2px solid rgba(255, 215, 0, 0.15);
-            color: #FFD700;
-            padding: 14px 8px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.15s;
-            text-align: center;
-        }
+        .bet-selection-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(16px); display: flex; justify-content: center; align-items: center; z-index: 20; transition: all 0.4s ease; }
+        .bet-selection-overlay.hidden { display: none; }
+        .bet-selection-container { text-align: center; padding: 30px 24px; background: linear-gradient(145deg, rgba(30, 30, 60, 0.95), rgba(20, 20, 50, 0.95)); border-radius: 30px; border: 2px solid rgba(255, 215, 0, 0.2); box-shadow: 0 0 60px rgba(255, 215, 0, 0.1); width: 92%; max-width: 400px; animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modalPop { 0% { transform: scale(0.85) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+        .bet-selection-title { font-size: 22px; font-weight: 800; color: #FFD700; margin-bottom: 6px; }
+        .bet-selection-sub { font-size: 12px; color: rgba(255, 255, 255, 0.3); margin-bottom: 20px; }
+        .bet-selection-chip { background: rgba(255, 215, 0, 0.05); border: 2px solid rgba(255, 215, 0, 0.15); color: #FFD700; padding: 14px 8px; border-radius: 16px; font-weight: 800; font-size: 18px; cursor: pointer; transition: all 0.15s; text-align: center; }
         .bet-selection-chip:active { transform: scale(0.95); }
-        .bet-selection-chip.selected {
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            color: #000;
-            border-color: #FFD700;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-        }
-
-        .start-game-btn {
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            color: #000;
-            border: none;
-            padding: 16px 30px;
-            border-radius: 60px;
-            font-weight: 800;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.15s;
-            width: 100%;
-            font-family: inherit;
-        }
+        .bet-selection-chip.selected { background: linear-gradient(135deg, #FFD700, #FF6B35); color: #000; border-color: #FFD700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.2); }
+        .start-game-btn { background: linear-gradient(135deg, #FFD700, #FF6B35); color: #000; border: none; padding: 16px 30px; border-radius: 60px; font-weight: 800; font-size: 18px; cursor: pointer; transition: all 0.15s; width: 100%; font-family: inherit; }
         .start-game-btn:active { transform: scale(0.97); }
-        .start-game-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .start-game-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         /* ===== الشريط السفلي ===== */
-        .game-bottom-bar {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(26, 26, 62, 0.6));
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 215, 0, 0.08);
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-shrink: 0;
-            z-index: 10;
-            flex-wrap: wrap;
-        }
-
-        .multiplier-box {
-            background: rgba(255, 215, 0, 0.05);
-            padding: 8px 16px;
-            border-radius: 30px;
-            text-align: center;
-            border: 1px solid rgba(255, 215, 0, 0.1);
-            min-width: 80px;
-        }
-        .multiplier-label {
-            font-size: 9px;
-            color: rgba(255, 215, 0, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .multiplier-value {
-            font-size: 20px;
-            font-weight: 800;
-            color: #FFD700;
-        }
-
-        .game-button {
-            border: none;
-            font-weight: 800;
-            padding: 10px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.15s;
-            font-family: inherit;
-            font-size: 16px;
-            white-space: nowrap;
-        }
+        .game-bottom-bar { background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(26, 26, 62, 0.6)); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 215, 0, 0.08); padding: 10px 14px; display: flex; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; z-index: 10; flex-wrap: wrap; }
+        .multiplier-box { background: rgba(255, 215, 0, 0.05); padding: 8px 16px; border-radius: 30px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.1); min-width: 80px; }
+        .multiplier-label { font-size: 9px; color: rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .multiplier-value { font-size: 20px; font-weight: 800; color: #FFD700; }
+        .game-button { border: none; font-weight: 800; padding: 10px 24px; border-radius: 40px; cursor: pointer; transition: all 0.15s; font-family: inherit; font-size: 16px; white-space: nowrap; }
         .game-button:active { transform: scale(0.95); }
-        .game-button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .drop-button {
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            color: #000;
-        }
-        .cashout-button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: #fff;
-            position: relative;
-        }
-        .cashout-amount {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #FFD700;
-            color: #000;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 2px 8px;
-            border-radius: 20px;
-        }
+        .game-button:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+        .drop-button { background: linear-gradient(135deg, #FFD700, #FF6B35); color: #000; }
+        .cashout-button { background: linear-gradient(135deg, #2ecc71, #27ae60); color: #fff; position: relative; }
+        .cashout-amount { position: absolute; top: -8px; right: -8px; background: #FFD700; color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 20px; }
 
         /* ===== حالة اللعبة ===== */
-        .game-status {
-            background: rgba(0, 0, 0, 0.3);
-            text-align: center;
-            padding: 5px 12px;
-            font-size: 11px;
-            color: rgba(255, 215, 0, 0.5);
-            border-top: 1px solid rgba(255, 215, 0, 0.05);
-            flex-shrink: 0;
-            z-index: 10;
-            min-height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .game-status .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
+        .game-status { background: rgba(0, 0, 0, 0.3); text-align: center; padding: 5px 12px; font-size: 11px; color: rgba(255, 215, 0, 0.5); border-top: 1px solid rgba(255, 215, 0, 0.05); flex-shrink: 0; z-index: 10; min-height: 30px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .game-status .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
         .status-dot.ready { background: #2ecc71; }
         .status-dot.playing { background: #FFD700; animation: pulse 0.8s infinite; }
         .status-dot.waiting { background: #f39c12; }
         .status-dot.error { background: #e74c3c; }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.7); }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.7); } }
 
         /* ===== الإشعارات ===== */
-        .notification-container {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            pointer-events: none;
-            width: 92%;
-            max-width: 420px;
-        }
-        .notification {
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(16px);
-            border-radius: 60px;
-            padding: 12px 22px;
-            width: 100%;
-            text-align: center;
-            font-weight: 700;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            border: 2px solid;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-            animation: notifIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            pointer-events: auto;
-        }
-        @keyframes notifIn {
-            0% { transform: translateY(-80px) scale(0.8); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        @keyframes notifOut {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-60px) scale(0.8); opacity: 0; }
-        }
-        .notification.hide {
-            animation: notifOut 0.4s ease-in forwards;
-        }
-
+        .notification-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; width: 92%; max-width: 420px; }
+        .notification { background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(16px); border-radius: 60px; padding: 12px 22px; width: 100%; text-align: center; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 2px solid; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5); animation: notifIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; pointer-events: auto; }
+        @keyframes notifIn { 0% { transform: translateY(-80px) scale(0.8); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes notifOut { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(0.8); opacity: 0; } }
+        .notification.hide { animation: notifOut 0.4s ease-in forwards; }
         .notification-success { border-color: #2ecc71; background: rgba(46, 204, 113, 0.15); }
         .notification-error { border-color: #e74c3c; background: rgba(231, 76, 60, 0.15); }
         .notification-warning { border-color: #f39c12; background: rgba(243, 156, 18, 0.15); }
         .notification-info { border-color: #3498db; background: rgba(52, 152, 219, 0.15); }
         .notification-cashout { border-color: #FFD700; background: rgba(255, 215, 0, 0.15); }
         .notification-complete { border-color: #FF6B35; background: rgba(255, 107, 53, 0.15); }
-
         .notification-icon { font-size: 22px; }
         .notification-text { font-size: 14px; }
 
-        /* ===== مودال الإحصائيات ===== */
-        .stats-modal {
+        /* ===== مودال الإدارة الكاملة ===== */
+        .admin-full-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(20px);
-            z-index: 2000;
+            z-index: 3000;
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            padding: 16px;
         }
-        .stats-modal.visible {
+        .admin-full-modal.visible {
             opacity: 1;
             visibility: visible;
         }
 
-        .stats-modal-content {
+        .admin-full-content {
             background: linear-gradient(145deg, rgba(30, 30, 60, 0.98), rgba(20, 20, 50, 0.98));
             border-radius: 30px;
             border: 2px solid rgba(255, 215, 0, 0.2);
-            max-width: 500px;
-            width: 92%;
-            max-height: 85vh;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
             overflow-y: auto;
-            padding: 20px;
+            padding: 24px;
             animation: modalPop 0.3s ease;
         }
 
-        .stats-modal-header {
+        .admin-full-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -650,356 +159,140 @@
             border-bottom: 2px solid rgba(255, 215, 0, 0.1);
             margin-bottom: 18px;
         }
-        .stats-modal-header h3 {
+        .admin-full-header h2 {
             font-size: 22px;
             color: #FFD700;
             margin: 0;
         }
-        .close-stats-modal {
+        .close-admin-modal {
             font-size: 30px;
             cursor: pointer;
             color: rgba(255, 255, 255, 0.3);
             transition: all 0.2s;
         }
-        .close-stats-modal:hover { color: #e74c3c; transform: scale(1.1); }
+        .close-admin-modal:hover { color: #e74c3c; transform: scale(1.1); }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        /* ===== أنماط الإدارة ===== */
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
             margin-bottom: 16px;
+            flex-wrap: wrap;
         }
-        .stats-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 14px 10px;
-            text-align: center;
-            border: 1px solid rgba(255, 215, 0, 0.05);
-        }
-        .stats-card-icon { font-size: 24px; margin-bottom: 4px; }
-        .stats-card-value {
-            font-size: 22px;
-            font-weight: 800;
-            color: #FFD700;
-        }
-        .stats-card-label {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: 2px;
-        }
-
-        .stats-section-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: rgba(255, 215, 0, 0.6);
-            margin: 16px 0 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.05);
-        }
-
-        .platform-profit {
-            font-size: 26px;
-            font-weight: 900;
-        }
-        .platform-profit.positive { color: #2ecc71; }
-        .platform-profit.negative { color: #e74c3c; }
-
-        .refresh-stats-btn {
-            background: rgba(52, 152, 219, 0.2);
-            border: 1px solid rgba(52, 152, 219, 0.3);
-            color: #3498db;
-            padding: 10px 20px;
+        .admin-tab-btn {
+            padding: 8px 16px;
             border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.4);
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
-            margin-top: 15px;
-            width: 100%;
             transition: all 0.2s;
             font-family: inherit;
         }
-        .refresh-stats-btn:hover {
-            background: #3498db;
-            color: #fff;
-        }
+        .admin-tab-btn:hover { background: rgba(255, 215, 0, 0.05); color: #fff; }
+        .admin-tab-btn.active { background: rgba(255, 215, 0, 0.1); border-color: #FFD700; color: #FFD700; }
 
-        /* ===== مقتطف التشويق ===== */
-        .teaser-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(20px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 15;
-            flex-direction: column;
-            padding: 30px;
-            animation: fadeIn 0.6s ease;
-        }
-        .teaser-overlay.show {
-            display: flex;
-        }
+        .admin-tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .admin-tab-content.active { display: block; }
+        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        .admin-card { background: rgba(0, 0, 0, 0.3); border-radius: 14px; padding: 16px; border: 1px solid rgba(255, 215, 0, 0.05); margin-bottom: 12px; }
+        .admin-card-title { font-size: 14px; font-weight: 700; color: #FFD700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 480px) { .admin-grid { grid-template-columns: 1fr; } }
+        .admin-field { background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.03); }
+        .admin-field label { display: block; font-size: 10px; color: rgba(255, 255, 255, 0.3); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .admin-field input, .admin-field select { width: 100%; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(0, 0, 0, 0.3); color: #fff; font-size: 14px; font-family: inherit; }
+        .admin-field input:focus, .admin-field select:focus { border-color: #FFD700; outline: none; }
+        .admin-field input[type="checkbox"] { width: auto; width: 20px; height: 20px; cursor: pointer; }
 
-        .teaser-content {
-            text-align: center;
-            max-width: 420px;
-            width: 100%;
-        }
+        .admin-multipliers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+        .admin-multiplier-item { background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 8px 6px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.03); }
+        .admin-multiplier-item label { display: block; font-size: 9px; color: rgba(255, 255, 255, 0.3); margin-bottom: 2px; }
+        .admin-multiplier-item input { width: 100%; padding: 4px 4px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(0, 0, 0, 0.3); color: #FFD700; font-size: 14px; font-weight: 700; text-align: center; font-family: inherit; }
+        .admin-multiplier-item input:focus { border-color: #FFD700; outline: none; }
 
-        .teaser-tower-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: towerFloat 3s ease-in-out infinite;
-        }
-        @keyframes towerFloat {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-12px) scale(1.05); }
-        }
+        .admin-btn { border: none; padding: 8px 20px; border-radius: 30px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: inherit; width: 100%; }
+        .admin-btn:active { transform: scale(0.97); }
+        .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .admin-btn-save { background: linear-gradient(135deg, #FFD700, #FF6B35); color: #000; }
+        .admin-btn-danger { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+        .admin-btn-danger:hover { background: #e74c3c; color: #fff; }
+        .admin-btn-success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+        .admin-btn-success:hover { background: #2ecc71; color: #fff; }
 
-        .teaser-title {
-            font-size: 28px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-        }
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 12px; }
+        .admin-stat-card { background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 10px; text-align: center; }
+        .admin-stat-value { font-size: 20px; font-weight: 800; color: #FFD700; }
+        .admin-stat-label { font-size: 9px; color: rgba(255, 255, 255, 0.3); margin-top: 2px; }
 
-        .teaser-subtitle {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+        .admin-actions { display: flex; flex-direction: column; gap: 10px; }
+        .admin-action-row { display: flex; gap: 8px; align-items: center; }
+        .admin-action-row input { flex: 1; padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(0, 0, 0, 0.3); color: #fff; font-family: inherit; }
 
-        .teaser-features {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-        .teaser-feature {
-            background: rgba(255, 215, 0, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.06);
-            border-radius: 14px;
-            padding: 12px 8px;
-            text-align: center;
-        }
-        .teaser-feature .icon { font-size: 24px; display: block; margin-bottom: 4px; }
-        .teaser-feature .label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 600;
-        }
-
-        .teaser-deposit-box {
-            background: rgba(255, 215, 0, 0.05);
-            border: 2px solid rgba(255, 215, 0, 0.1);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .teaser-deposit-box .info {
-            text-align: right;
-        }
-        .teaser-deposit-box .info .label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.3);
-        }
-        .teaser-deposit-box .info .amount {
-            font-size: 20px;
-            font-weight: 800;
-            color: #FFD700;
-        }
-        .teaser-deposit-box .status-badge {
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .status-badge.not-met {
-            background: rgba(231, 76, 60, 0.15);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-        .status-badge.met {
-            background: rgba(46, 204, 113, 0.15);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.2);
-        }
-        .status-badge.waiting {
-            background: rgba(243, 156, 18, 0.15);
-            color: #f39c12;
-            border: 1px solid rgba(243, 156, 18, 0.2);
-        }
-
-        .teaser-progress {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .teaser-progress .fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FF6B35);
-            border-radius: 10px;
-            width: 0%;
-            transition: width 0.8s ease;
-        }
-        .teaser-progress .fill.animated {
-            animation: progressPulse 2s ease-in-out infinite;
-        }
-        @keyframes progressPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .teaser-btn {
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            color: #000;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 60px;
-            font-weight: 800;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            font-family: inherit;
-        }
-        .teaser-btn:active { transform: scale(0.97); }
-        .teaser-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .teaser-btn-secondary {
-            background: transparent;
-            border: 2px solid rgba(255, 215, 0, 0.15);
-            color: rgba(255, 255, 255, 0.5);
-            padding: 12px 30px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            margin-top: 8px;
-            font-family: inherit;
-        }
-        .teaser-btn-secondary:active { transform: scale(0.97); }
-
-        .error-container {
-            display: none;
-            text-align: center;
-            padding: 30px 20px;
-            background: rgba(18, 18, 18, 0.9);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            max-width: 420px;
-            margin: auto;
-            z-index: 5;
-        }
-        .error-container.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        .error-container .error-icon { font-size: 48px; margin-bottom: 12px; }
-        .error-container .error-title {
-            color: #FFD700;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        .error-container .error-text {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
-            line-height: 1.8;
-        }
-        .error-container .error-text .highlight {
-            color: #FFD700;
-            font-weight: 700;
-        }
-        .error-container .btn-open-bot {
-            margin-top: 16px;
-            padding: 14px 36px;
-            background: linear-gradient(135deg, #FFD700, #FF6B35);
-            border: none;
-            border-radius: 14px;
-            color: #000;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .error-container .btn-open-bot:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
-        }
+        .spinner-small { width: 20px; height: 20px; border: 2px solid rgba(255, 215, 0, 0.1); border-top: 2px solid #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
 
         .hidden { display: none !important; }
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255, 215, 0, 0.1);
-            border-top: 3px solid #FFD700;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 16px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+
+        /* ===== مقتطف التشويق ===== */
+        .teaser-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(20px); display: none; justify-content: center; align-items: center; z-index: 15; flex-direction: column; padding: 30px; animation: fadeIn 0.6s ease; }
+        .teaser-overlay.show { display: flex; }
+        .teaser-content { text-align: center; max-width: 420px; width: 100%; }
+        .teaser-tower-icon { font-size: 80px; margin-bottom: 20px; animation: towerFloat 3s ease-in-out infinite; }
+        @keyframes towerFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-12px) scale(1.05); } }
+        .teaser-title { font-size: 28px; font-weight: 900; background: linear-gradient(135deg, #FFD700, #FF6B35); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; }
+        .teaser-subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.4); margin-bottom: 20px; line-height: 1.6; }
+        .teaser-features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
+        .teaser-feature { background: rgba(255, 215, 0, 0.03); border: 1px solid rgba(255, 215, 0, 0.06); border-radius: 14px; padding: 12px 8px; text-align: center; }
+        .teaser-feature .icon { font-size: 24px; display: block; margin-bottom: 4px; }
+        .teaser-feature .label { font-size: 11px; color: rgba(255, 255, 255, 0.5); font-weight: 600; }
+        .teaser-deposit-box { background: rgba(255, 215, 0, 0.05); border: 2px solid rgba(255, 215, 0, 0.1); border-radius: 16px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .teaser-deposit-box .info { text-align: right; }
+        .teaser-deposit-box .info .label { font-size: 11px; color: rgba(255, 255, 255, 0.3); }
+        .teaser-deposit-box .info .amount { font-size: 20px; font-weight: 800; color: #FFD700; }
+        .status-badge { padding: 6px 16px; border-radius: 30px; font-size: 12px; font-weight: 700; }
+        .status-badge.not-met { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+        .status-badge.met { background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+        .status-badge.waiting { background: rgba(243, 156, 18, 0.15); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.2); }
+        .teaser-progress { width: 100%; height: 4px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .teaser-progress .fill { height: 100%; background: linear-gradient(90deg, #FFD700, #FF6B35); border-radius: 10px; width: 0%; transition: width 0.8s ease; }
+        .teaser-progress .fill.animated { animation: progressPulse 2s ease-in-out infinite; }
+        @keyframes progressPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .teaser-btn { background: linear-gradient(135deg, #FFD700, #FF6B35); color: #000; border: none; padding: 14px 30px; border-radius: 60px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.2s; width: 100%; font-family: inherit; }
+        .teaser-btn:active { transform: scale(0.97); }
+        .teaser-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .teaser-btn-secondary { background: transparent; border: 2px solid rgba(255, 215, 0, 0.15); color: rgba(255, 255, 255, 0.5); padding: 12px 30px; border-radius: 60px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 8px; font-family: inherit; }
+
+        .error-container { display: none; text-align: center; padding: 30px 20px; background: rgba(18, 18, 18, 0.9); border-radius: 20px; backdrop-filter: blur(10px); max-width: 420px; margin: auto; z-index: 5; }
+        .error-container.show { display: block; animation: fadeIn 0.5s ease; }
+        .error-container .error-icon { font-size: 48px; margin-bottom: 12px; }
+        .error-container .error-title { color: #FFD700; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        .error-container .error-text { color: rgba(255, 255, 255, 0.5); font-size: 14px; line-height: 1.8; }
+        .error-container .error-text .highlight { color: #FFD700; font-weight: 700; }
+        .error-container .btn-open-bot { margin-top: 16px; padding: 14px 36px; background: linear-gradient(135deg, #FFD700, #FF6B35); border: none; border-radius: 14px; color: #000; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+        .error-container .btn-open-bot:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 0.15); }
+
+        .hidden { display: none !important; }
+        .spinner { width: 36px; height: 36px; border: 3px solid rgba(255, 215, 0, 0.1); border-top: 3px solid #FFD700; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 16px auto; }
 
         @media (max-width: 480px) {
             .game-bottom-bar { padding: 8px 10px; gap: 8px; }
             .multiplier-box { min-width: 60px; padding: 4px 10px; }
             .multiplier-value { font-size: 16px; }
             .game-button { padding: 8px 16px; font-size: 14px; }
-            .drop-button { padding: 8px 18px; }
-            .cashout-button { padding: 8px 18px; }
             .bet-selection-chip { padding: 10px 6px; font-size: 15px; }
             .bet-selection-title { font-size: 18px; }
             .start-game-btn { padding: 14px 20px; font-size: 16px; }
             .notification { padding: 10px 16px; font-size: 14px; }
-            .notification-text { font-size: 13px; }
             .header-logo { font-size: 14px; }
             .header-balance-value { font-size: 13px; }
             .teaser-title { font-size: 22px; }
             .teaser-tower-icon { font-size: 60px; }
-            .teaser-deposit-box { padding: 12px 16px; }
-            .teaser-deposit-box .info .amount { font-size: 17px; }
-            .stats-card-value { font-size: 18px; }
-            .platform-profit { font-size: 22px; }
-            .game-status { font-size: 10px; padding: 4px 10px; min-height: 24px; }
-        }
-
-        @media (max-width: 380px) {
-            .game-button { font-size: 12px; padding: 6px 12px; }
-            .multiplier-value { font-size: 14px; }
-            .bet-selection-chip { font-size: 13px; padding: 8px 4px; }
-            .teaser-features { grid-template-columns: 1fr 1fr; gap: 6px; }
-            .teaser-feature { padding: 8px 4px; }
-            .teaser-feature .icon { font-size: 18px; }
+            .admin-full-content { padding: 16px; }
+            .admin-grid { grid-template-columns: 1fr; }
+            .admin-multipliers-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
         }
     </style>
 </head>
@@ -1028,6 +321,7 @@
     <div class="game-header">
         <div class="header-logo">🏗️ SPINIX | GOLDEN TOWER</div>
         <div class="header-right">
+            <button id="adminFullBtn" class="admin-full-btn hidden">⚙️ إدارة</button>
             <button id="adminStatsBtn" class="admin-stats-btn hidden">📊 إحصائيات</button>
             <div class="header-balance">
                 <span class="header-balance-value" id="headerBalance">0</span>
@@ -1110,20 +404,62 @@
 <!-- ===== الإشعارات ===== -->
 <div id="notificationContainer" class="notification-container"></div>
 
-<!-- ===== مودال الإحصائيات ===== -->
-<div id="statsModal" class="stats-modal">
-    <div class="stats-modal-content">
-        <div class="stats-modal-header">
-            <h3>📊 إحصائيات SPINIX</h3>
-            <span class="close-stats-modal" id="closeStatsModal">&times;</span>
+<!-- ===== مودال الإدارة الكاملة ===== -->
+<div id="adminFullModal" class="admin-full-modal">
+    <div class="admin-full-content">
+        <div class="admin-full-header">
+            <h2>⚙️ إدارة SPINIX</h2>
+            <span class="close-admin-modal" id="closeAdminModal">&times;</span>
         </div>
-        <div id="statsContent">
-            <div style="text-align:center;padding:20px;">
-                <div class="spinner"></div>
-                <p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل الإحصائيات...</p>
+
+        <!-- التبويبات -->
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" data-tab="admin-settings">⚙️ إعدادات</button>
+            <button class="admin-tab-btn" data-tab="admin-multipliers">📈 مضاعفات</button>
+            <button class="admin-tab-btn" data-tab="admin-stats">📊 إحصائيات</button>
+            <button class="admin-tab-btn" data-tab="admin-actions">⚡ إجراءات</button>
+        </div>
+
+        <!-- ===== تبويب الإعدادات ===== -->
+        <div id="admin-tab-settings" class="admin-tab-content active">
+            <div id="adminSettingsLoading"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل الإعدادات...</p></div>
+            <div id="adminSettingsForm" class="hidden">
+                <div class="admin-grid" id="adminSettingsFields"></div>
+                <button class="admin-btn admin-btn-save" id="adminSaveSettingsBtn">💾 حفظ جميع الإعدادات</button>
             </div>
         </div>
-        <button class="refresh-stats-btn" id="refreshStatsBtn">🔄 تحديث الإحصائيات</button>
+
+        <!-- ===== تبويب المضاعفات ===== -->
+        <div id="admin-tab-multipliers" class="admin-tab-content">
+            <div id="adminMultipliersLoading"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل المضاعفات...</p></div>
+            <div id="adminMultipliersForm" class="hidden">
+                <div class="admin-multipliers-grid" id="adminMultipliersFields"></div>
+                <button class="admin-btn admin-btn-save" id="adminSaveMultipliersBtn" style="margin-top:12px;">💾 حفظ المضاعفات</button>
+            </div>
+        </div>
+
+        <!-- ===== تبويب الإحصائيات ===== -->
+        <div id="admin-tab-stats" class="admin-tab-content">
+            <div id="adminStatsLoading"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل الإحصائيات...</p></div>
+            <div id="adminStatsContent" class="hidden"></div>
+            <button class="admin-btn admin-btn-success" id="adminRefreshStatsBtn" style="margin-top:12px;">🔄 تحديث الإحصائيات</button>
+        </div>
+
+        <!-- ===== تبويب الإجراءات ===== -->
+        <div id="admin-tab-actions" class="admin-tab-content">
+            <div class="admin-actions">
+                <button class="admin-btn admin-btn-danger" id="adminResetSpinsBtn">🗑️ حذف سجل التدويرات (جميع المستخدمين)</button>
+                <div class="admin-action-row">
+                    <input type="text" id="adminResetUserIdInput" placeholder="معرف المستخدم">
+                    <button class="admin-btn admin-btn-danger" id="adminResetSpecificUserBtn" style="width:auto;padding:8px 16px;">🗑️ حذف</button>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="admin-btn admin-btn-success" id="adminExportCsvBtn" style="flex:1;">📄 CSV</button>
+                    <button class="admin-btn admin-btn-success" id="adminExportJsonBtn" style="flex:1;">📄 JSON</button>
+                </div>
+                <button class="admin-btn admin-btn-danger" id="adminSeedPrizesBtn">🔄 إعادة تعيين الجوائز الافتراضية</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1139,7 +475,7 @@
 </div>
 
 <!-- ================================================================
-     جافا سكريبت - النظام الكامل مع المؤثرات الصوتية
+     جافا سكريبت - النظام الكامل
      ================================================================ -->
 <script>
     // ================================================================
@@ -1160,19 +496,15 @@
     let isGameReady = false;
 
     // ================================================================
-    //                      نظام الصوت المتقدم
+    //                      نظام الصوت
     // ================================================================
     class AudioManager {
         constructor() {
             this.initialized = false;
             this.audioContext = null;
             this.isMuted = false;
-            this.sounds = {};
-            
-            // تهيئة السياق الصوتي عند أول تفاعل
             this._init();
         }
-
         _init() {
             try {
                 this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1183,17 +515,11 @@
                 this.initialized = false;
             }
         }
-
-        // ===== توليد الأصوات برمجياً =====
-
-        // 🎵 صوت بدء اللعبة
         playStartSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // ثلاث نغمات تصاعدية
                 [523, 659, 784].forEach((freq, i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1208,15 +534,11 @@
                 });
             } catch (e) { console.warn('Start sound error:', e); }
         }
-
-        // 🎵 صوت إفلات الطابق (Drop)
         playDropSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // صوت سقوط
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
@@ -1228,8 +550,6 @@
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
                 osc.start(now);
                 osc.stop(now + 0.3);
-
-                // تأثير ارتطام
                 const osc2 = ctx.createOscillator();
                 const gain2 = ctx.createGain();
                 osc2.connect(gain2);
@@ -1243,22 +563,17 @@
                 osc2.stop(now + 0.45);
             } catch (e) { console.warn('Drop sound error:', e); }
         }
-
-        // 🎵 صوت الفوز (Win)
         playWinSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // لحن منتصرة
                 const notes = [
                     [523, 0.12, 0.06], [587, 0.12, 0.06], [659, 0.12, 0.06],
                     [784, 0.2, 0.07], [659, 0.12, 0.06], [784, 0.12, 0.06],
                     [880, 0.12, 0.06], [988, 0.25, 0.08], [880, 0.15, 0.06],
                     [784, 0.15, 0.06], [880, 0.15, 0.06], [1175, 0.35, 0.09]
                 ];
-
                 notes.forEach(([freq, dur, vol], i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1272,39 +587,14 @@
                     osc.start(now + i * 0.08);
                     osc.stop(now + i * 0.08 + dur);
                 });
-
-                // تأثير نهائي
-                setTimeout(() => {
-                    const t = ctx.currentTime;
-                    [523, 659, 784, 1047].forEach((freq, i) => {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
-                        osc.frequency.setValueAtTime(freq, t + i * 0.06);
-                        osc.type = 'sine';
-                        gain.gain.setValueAtTime(0.03, t + i * 0.06);
-                        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.2);
-                        osc.start(t + i * 0.06);
-                        osc.stop(t + i * 0.06 + 0.2);
-                    });
-                }, notes.length * 0.08 + 0.1);
             } catch (e) { console.warn('Win sound error:', e); }
         }
-
-        // 🎵 صوت الخسارة (Loss)
         playLoseSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // نغمات هابطة حزينة
-                const notes = [
-                    [440, 0.25, 0.04], [370, 0.25, 0.04],
-                    [330, 0.35, 0.05], [247, 0.5, 0.05]
-                ];
-
+                const notes = [[440, 0.25, 0.04], [370, 0.25, 0.04], [330, 0.35, 0.05], [247, 0.5, 0.05]];
                 notes.forEach(([freq, dur, vol], i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1318,33 +608,13 @@
                     osc.start(now + i * 0.2);
                     osc.stop(now + i * 0.2 + dur);
                 });
-
-                // تأثير نهاية حزين
-                setTimeout(() => {
-                    const t = ctx.currentTime;
-                    const osc2 = ctx.createOscillator();
-                    const gain2 = ctx.createGain();
-                    osc2.connect(gain2);
-                    gain2.connect(ctx.destination);
-                    osc2.frequency.setValueAtTime(200, t);
-                    osc2.frequency.exponentialRampToValueAtTime(100, t + 0.6);
-                    osc2.type = 'sawtooth';
-                    gain2.gain.setValueAtTime(0.025, t);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-                    osc2.start(t);
-                    osc2.stop(t + 0.6);
-                }, notes.length * 0.2 + 0.1);
             } catch (e) { console.warn('Lose sound error:', e); }
         }
-
-        // 🎵 صوت جمع الأرباح (Cashout)
         playCashoutSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // صوت عملات متتالي
                 for (let i = 0; i < 12; i++) {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1359,8 +629,6 @@
                     osc.start(now + i * 0.06);
                     osc.stop(now + i * 0.06 + 0.05);
                 }
-
-                // نغمة نهاية
                 setTimeout(() => {
                     const t = ctx.currentTime;
                     [523, 659, 784].forEach((freq, i) => {
@@ -1378,21 +646,16 @@
                 }, 12 * 0.06 + 0.05);
             } catch (e) { console.warn('Cashout sound error:', e); }
         }
-
-        // 🎵 صوت إكمال البرج (Complete)
         playCompleteSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // لحن منتصر
                 const notes = [
                     [523, 0.15, 0.05], [587, 0.15, 0.05], [659, 0.15, 0.05],
                     [784, 0.15, 0.05], [880, 0.2, 0.06], [988, 0.2, 0.06],
                     [1175, 0.3, 0.07], [1319, 0.3, 0.07], [1568, 0.4, 0.08]
                 ];
-
                 notes.forEach(([freq, dur, vol], i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1406,49 +669,13 @@
                     osc.start(now + i * 0.07);
                     osc.stop(now + i * 0.07 + dur);
                 });
-
-                // تأثير نهائي كبير
-                setTimeout(() => {
-                    const t = ctx.currentTime;
-                    [523, 659, 784, 1047, 1319].forEach((freq, i) => {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
-                        osc.frequency.setValueAtTime(freq, t + i * 0.05);
-                        osc.type = 'sine';
-                        gain.gain.setValueAtTime(0.04, t + i * 0.05);
-                        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.05 + 0.25);
-                        osc.start(t + i * 0.05);
-                        osc.stop(t + i * 0.05 + 0.25);
-                    });
-                }, notes.length * 0.07 + 0.1);
-
-                // تأثير إضافي
-                setTimeout(() => {
-                    const t = ctx.currentTime;
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.frequency.setValueAtTime(880, t);
-                    osc.frequency.exponentialRampToValueAtTime(1760, t + 0.5);
-                    osc.type = 'sine';
-                    gain.gain.setValueAtTime(0.03, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-                    osc.start(t);
-                    osc.stop(t + 0.5);
-                }, notes.length * 0.07 + 0.3);
             } catch (e) { console.warn('Complete sound error:', e); }
         }
-
-        // 🎵 صوت خطأ
         playErrorSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
@@ -1462,14 +689,6 @@
                 osc.stop(now + 0.2);
             } catch (e) { console.warn('Error sound error:', e); }
         }
-
-        // ===== تبديل كتم الصوت =====
-        toggleMute() {
-            this.isMuted = !this.isMuted;
-            return this.isMuted;
-        }
-
-        // ===== استئناف السياق الصوتي =====
         resume() {
             if (this.audioContext && this.audioContext.state === 'suspended') {
                 this.audioContext.resume();
@@ -1477,7 +696,6 @@
         }
     }
 
-    // ===== إنشاء كائن الصوت =====
     const audioManager = new AudioManager();
 
     // ================================================================
@@ -1489,37 +707,22 @@
             this.retryDelay = 2000;
             this.timeout = 50000;
         }
-
         async fetchWithRetry(url, options = {}, retryCount = 0) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
             try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
+                const response = await fetch(url, { ...options, signal: controller.signal });
                 clearTimeout(timeoutId);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response;
             } catch (error) {
                 clearTimeout(timeoutId);
-
-                if (error.name === 'AbortError') {
-                    throw new Error('انتهت مهلة الاتصال بالخادم (50 ثانية)');
-                }
-
+                if (error.name === 'AbortError') throw new Error('انتهت مهلة الاتصال بالخادم (50 ثانية)');
                 if (retryCount < this.maxRetries) {
                     const delay = this.retryDelay * (retryCount + 1);
-                    console.log(`محاولة إعادة الاتصال ${retryCount + 1}/${this.maxRetries} بعد ${delay}ms`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                     return this.fetchWithRetry(url, options, retryCount + 1);
                 }
-
                 throw error;
             }
         }
@@ -1533,36 +736,23 @@
     function getUserId() {
         const params = new URLSearchParams(window.location.search);
         let id = params.get('user_id') || params.get('userId') || params.get('id');
-        
         if (id && !isNaN(id)) {
             USER_ID = parseInt(id);
             localStorage.setItem('spinix_user_id', USER_ID);
-            console.log('✅ USER_ID من الرابط:', USER_ID);
             return USER_ID;
         }
-        
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 const user = window.Telegram.WebApp.initDataUnsafe?.user;
                 if (user && user.id) {
                     USER_ID = user.id;
                     localStorage.setItem('spinix_user_id', USER_ID);
-                    console.log('✅ USER_ID من Telegram:', USER_ID);
                     return USER_ID;
                 }
             }
-        } catch (e) {
-            console.warn('Telegram WebApp not available');
-        }
-        
+        } catch (e) { console.warn('Telegram WebApp not available'); }
         id = localStorage.getItem('spinix_user_id');
-        if (id) {
-            USER_ID = parseInt(id);
-            console.log('✅ USER_ID من localStorage:', USER_ID);
-            return USER_ID;
-        }
-        
-        console.error('❌ لا يمكن الحصول على USER_ID');
+        if (id) { USER_ID = parseInt(id); return USER_ID; }
         return null;
     }
 
@@ -1573,10 +763,7 @@
         try {
             const response = await connectionManager.fetchWithRetry(`${API_BASE}${endpoint}`, {
                 ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...options.headers
-                }
+                headers: { 'Content-Type': 'application/json', ...options.headers }
             });
             return response;
         } catch (error) {
@@ -1591,26 +778,16 @@
     function showNotification(message, type = 'info', duration = 3500) {
         const container = document.getElementById('notificationContainer');
         const notification = document.createElement('div');
-
         const icons = { success: '🎉', error: '💔', warning: '⚠️', info: 'ℹ️', cashout: '💰', complete: '🏆' };
         const classes = { success: 'notification-success', error: 'notification-error', warning: 'notification-warning', info: 'notification-info', cashout: 'notification-cashout', complete: 'notification-complete' };
-
         const icon = icons[type] || 'ℹ️';
         const cls = classes[type] || 'notification-info';
-
         notification.className = `notification ${cls}`;
-        notification.innerHTML = `
-            <span class="notification-icon">${icon}</span>
-            <span class="notification-text">${message}</span>
-        `;
-
+        notification.innerHTML = `<span class="notification-icon">${icon}</span><span class="notification-text">${message}</span>`;
         container.appendChild(notification);
-
         setTimeout(() => {
             notification.classList.add('hide');
-            setTimeout(() => {
-                if (notification.parentNode) notification.remove();
-            }, 400);
+            setTimeout(() => { if (notification.parentNode) notification.remove(); }, 400);
         }, duration);
     }
 
@@ -1619,8 +796,7 @@
     // ================================================================
     function createStars() {
         const container = document.getElementById('starsContainer');
-        const count = 80;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < 80; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             const size = 1 + Math.random() * 2;
@@ -1632,29 +808,19 @@
             star.style.animationDelay = (Math.random() * 5) + 's';
             container.appendChild(star);
         }
-        console.log('✅ تم إنشاء النجوم');
     }
 
     // ================================================================
     //                      شاشة التحميل
     // ================================================================
     function updateProgress(percent, status) {
-        const bar = document.getElementById('progressBar');
-        const text = document.getElementById('progressPercent');
-        const statusEl = document.getElementById('loadingStatus');
-        bar.style.width = percent + '%';
-        text.textContent = percent + '%';
-        if (status) statusEl.textContent = status;
-        console.log(`📊 التحميل: ${percent}% - ${status || ''}`);
+        document.getElementById('progressBar').style.width = percent + '%';
+        document.getElementById('progressPercent').textContent = percent + '%';
+        if (status) document.getElementById('loadingStatus').textContent = status;
     }
 
     function showLoading(show) {
-        const screen = document.getElementById('loadingScreen');
-        if (show) {
-            screen.classList.remove('hidden');
-        } else {
-            screen.classList.add('hidden');
-        }
+        document.getElementById('loadingScreen').classList.toggle('hidden', !show);
     }
 
     // ================================================================
@@ -1665,17 +831,11 @@
             const res = await apiCall(`/api/spinix/admin/settings?admin_id=${ADMIN_ID}`);
             if (res?.ok) {
                 const data = await res.json();
-                if (data.success) {
-                    if (data.settings.bet_amount) {
-                        currentBet = parseFloat(data.settings.bet_amount) || 1000;
-                    }
-                    return data.settings;
+                if (data.success && data.settings.bet_amount) {
+                    currentBet = parseFloat(data.settings.bet_amount) || 1000;
                 }
             }
-        } catch (error) {
-            console.error('Error loading settings:', error);
-        }
-        return {};
+        } catch (error) { console.error('Error loading settings:', error); }
     }
 
     // ================================================================
@@ -1683,23 +843,14 @@
     // ================================================================
     async function checkDepositStatus() {
         if (!USER_ID) return;
-
         try {
             const res = await apiCall(`/api/spinix/status?user_id=${USER_ID}`);
-            if (!res?.ok) {
-                showNotification('فشل التحقق من حالة الإيداع', 'error');
-                return;
-            }
-
+            if (!res?.ok) { showNotification('فشل التحقق من حالة الإيداع', 'error'); return; }
             const data = await res.json();
-            if (!data.success) {
-                showNotification(data.error || 'خطأ في التحقق', 'error');
-                return;
-            }
+            if (!data.success) { showNotification(data.error || 'خطأ في التحقق', 'error'); return; }
 
             const deposit = data.deposit_requirement || {};
             const canPlay = data.can_play;
-
             const teaser = document.getElementById('teaserOverlay');
             const depositAmount = document.getElementById('teaserDepositAmount');
             const statusBadge = document.getElementById('teaserStatusBadge');
@@ -1729,10 +880,7 @@
                     progressFill.classList.remove('animated');
                     checkBtn.textContent = '🎮 العب الآن!';
                     checkBtn.disabled = false;
-                    checkBtn.onclick = () => {
-                        teaser.classList.remove('show');
-                        showBetSelection();
-                    };
+                    checkBtn.onclick = () => { teaser.classList.remove('show'); showBetSelection(); };
                 } else {
                     const percent = Math.min((current / minAmount) * 100, 99);
                     statusBadge.className = 'status-badge not-met';
@@ -1744,11 +892,8 @@
                     checkBtn.onclick = () => { window.open('https://t.me/IChancyBot', '_blank'); };
                 }
             } else {
-                if (canPlay) {
-                    teaser.classList.remove('show');
-                    showBetSelection();
-                    return;
-                } else {
+                if (canPlay) { teaser.classList.remove('show'); showBetSelection(); return; }
+                else {
                     statusBadge.className = 'status-badge waiting';
                     statusBadge.textContent = '⏳ انتظر...';
                     progressFill.style.width = '50%';
@@ -1758,13 +903,8 @@
                 }
             }
 
-            if (!canPlay || deposit.round_consumed) {
-                teaser.classList.add('show');
-                hideBetSelection();
-            } else {
-                teaser.classList.remove('show');
-                showBetSelection();
-            }
+            if (!canPlay || deposit.round_consumed) { teaser.classList.add('show'); hideBetSelection(); }
+            else { teaser.classList.remove('show'); showBetSelection(); }
 
         } catch (error) {
             console.error('Deposit check error:', error);
@@ -1775,18 +915,12 @@
     // ================================================================
     //                      دوال العرض
     // ================================================================
-    function showBetSelection() {
-        document.getElementById('betSelectionOverlay').classList.remove('hidden');
-    }
-
-    function hideBetSelection() {
-        document.getElementById('betSelectionOverlay').classList.add('hidden');
-    }
+    function showBetSelection() { document.getElementById('betSelectionOverlay').classList.remove('hidden'); }
+    function hideBetSelection() { document.getElementById('betSelectionOverlay').classList.add('hidden'); }
 
     function updateUI() {
         document.getElementById('headerBalance').textContent = Math.floor(userBalance);
-        const multiplier = currentMultiplier || 0;
-        document.getElementById('multiplierValue').textContent = multiplier.toFixed(2) + 'x';
+        document.getElementById('multiplierValue').textContent = (currentMultiplier || 0).toFixed(2) + 'x';
 
         const cashoutAmountSpan = document.getElementById('cashoutAmount');
         const cashoutBtn = document.getElementById('cashoutButton');
@@ -1823,19 +957,11 @@
     // ================================================================
     async function loadGameState() {
         if (!USER_ID) return;
-
         try {
             const res = await apiCall(`/api/spinix/status?user_id=${USER_ID}`);
-            if (!res?.ok) {
-                showNotification('فشل تحميل حالة اللعبة', 'error');
-                return;
-            }
-
+            if (!res?.ok) { showNotification('فشل تحميل حالة اللعبة', 'error'); return; }
             const data = await res.json();
-            if (!data.success) {
-                showNotification(data.error || 'خطأ في تحميل الحالة', 'error');
-                return;
-            }
+            if (!data.success) { showNotification(data.error || 'خطأ في تحميل الحالة', 'error'); return; }
 
             await checkDepositStatus();
 
@@ -1845,13 +971,10 @@
                 currentFloor = game.current_floor || 0;
                 pendingProfit = game.pending_profit || 0;
                 currentMultiplier = game.current_multiplier || 0;
-
                 updateUI();
                 updateGameStatus(`🔄 استئناف الجولة - الطابق ${currentFloor + 1}`, 'playing');
-
                 document.getElementById('dropButton').disabled = false;
                 document.getElementById('cashoutButton').disabled = pendingProfit <= 0;
-
                 hideBetSelection();
                 document.getElementById('teaserOverlay').classList.remove('show');
             } else {
@@ -1859,18 +982,12 @@
                 currentFloor = 0;
                 pendingProfit = 0;
                 currentMultiplier = 0;
-
                 document.getElementById('dropButton').disabled = true;
                 document.getElementById('cashoutButton').disabled = true;
-
                 updateUI();
                 updateGameStatus('✨ جاهز للعب', 'info');
-
-                if (data.can_play) {
-                    showBetSelection();
-                }
+                if (data.can_play) showBetSelection();
             }
-
         } catch (error) {
             console.error('Load game state error:', error);
             showNotification('خطأ في تحميل حالة اللعبة', 'error');
@@ -1881,22 +998,13 @@
     //                      بدء اللعبة
     // ================================================================
     async function startGame() {
-        if (isProcessingRequest) {
-            showNotification('جاري معالجة طلب سابق...', 'warning');
-            return;
-        }
-
-        if (!USER_ID) {
-            showNotification('معرف المستخدم غير موجود', 'error');
-            return;
-        }
+        if (isProcessingRequest) { showNotification('جاري معالجة طلب سابق...', 'warning'); return; }
+        if (!USER_ID) { showNotification('معرف المستخدم غير موجود', 'error'); return; }
 
         isProcessingRequest = true;
         const btn = document.getElementById('startGameBtn');
         btn.disabled = true;
         btn.textContent = '⏳ جاري البدء...';
-
-        // ✅ تشغيل صوت البداية
         audioManager.resume();
         audioManager.playStartSound();
 
@@ -1924,26 +1032,20 @@
                 currentFloor = 0;
                 pendingProfit = 0;
                 currentMultiplier = 0;
-
                 hideBetSelection();
                 document.getElementById('dropButton').disabled = false;
                 document.getElementById('cashoutButton').disabled = true;
                 document.getElementById('teaserOverlay').classList.remove('show');
-
                 updateUI();
                 updateGameStatus(`🎯 الطابق 1 · مضاعف 0.00x`, 'playing');
                 showNotification(`🎮 جولة جديدة! رهان ${data.bet_amount} SYP`, 'success');
-
                 initCanvas();
                 resetGameState();
             } else {
                 showNotification(data.error || 'فشل بدء الجولة', 'error');
                 audioManager.playErrorSound();
-                if (data.deposit_required) {
-                    await checkDepositStatus();
-                }
+                if (data.deposit_required) await checkDepositStatus();
             }
-
         } catch (error) {
             console.error('Start game error:', error);
             showNotification('خطأ في الاتصال', 'error');
@@ -1959,87 +1061,45 @@
     //                      دوال الرسم (Canvas)
     // ================================================================
     let canvas, ctx;
-    let cameraY = 0;
-    let targetCameraY = 0;
+    let cameraY = 0, targetCameraY = 0;
     let builtFloors = [];
     let ground = { x: 0, y: 0, w: 210, h: 26 };
-    let initialPivotY = -30;
-    let pivotOffsetY = 0;
-    let isFalling = false;
-    let fallVelY = 0;
+    let initialPivotY = -30, pivotOffsetY = 0;
+    let isFalling = false, fallVelY = 0;
     let fallPosX = 0, fallPosY = 0;
-    let fallW = 50, fallH = 50;
-    let fallFloorNum = 0;
-    let waitingForLanding = false;
-    let pendingResult = null;
-
-    const MAX_FLOOR = 13;
-    const FLOOR_HEIGHT_INCREMENT = 23;
-    const FALL_GRAVITY = 0.65;
-    const SPEEDS_BY_FLOOR = {
-        0: 0.048, 1: 0.052, 2: 0.066, 3: 0.070, 4: 0.084,
-        5: 0.098, 6: 0.102, 7: 0.116, 8: 0.120, 9: 0.124,
-        10: 0.138, 11: 0.152, 12: 0.166, 13: 0.170
-    };
+    let fallW = 50, fallH = 50, fallFloorNum = 0;
+    let waitingForLanding = false, pendingResult = null;
+    const MAX_FLOOR = 13, FLOOR_HEIGHT_INCREMENT = 23, FALL_GRAVITY = 0.65;
+    const SPEEDS_BY_FLOOR = { 0: 0.048, 1: 0.052, 2: 0.066, 3: 0.070, 4: 0.084, 5: 0.098, 6: 0.102, 7: 0.116, 8: 0.120, 9: 0.124, 10: 0.138, 11: 0.152, 12: 0.166, 13: 0.170 };
     const MAX_SPEED = 0.170;
 
-    let swinging = {
-        x: 0, y: 0, w: 50, h: 50,
-        angle: 0, speed: 0.048, direction: 1, maxAngle: 0.85,
-        pivotX: 0, pivotY: -30, ropeLength: 210
-    };
+    let swinging = { x: 0, y: 0, w: 50, h: 50, angle: 0, speed: 0.048, direction: 1, maxAngle: 0.85, pivotX: 0, pivotY: -30, ropeLength: 210 };
 
     let floorImage = new Image();
     let imageLoaded = false;
-    floorImage.onload = () => { 
-        imageLoaded = true; 
-        console.log('✅ صورة الطوابق تم تحميلها');
-    };
-    floorImage.onerror = () => { 
-        imageLoaded = true; 
-        console.warn('⚠️ فشل تحميل صورة الطوابق، سيتم استخدام الألوان');
-    };
+    floorImage.onload = () => { imageLoaded = true; console.log('✅ صورة الطوابق تم تحميلها'); };
+    floorImage.onerror = () => { imageLoaded = true; console.warn('⚠️ فشل تحميل صورة الطوابق'); };
     floorImage.src = 'https://i.postimg.cc/4xgFPsZ3/6c6603f0-8557-11f1-b3b3-c1f91893a2ea.png';
 
     function initCanvas() {
-        console.log('🎨 تهيئة الكانفاس...');
         canvas = document.getElementById('gameCanvas');
-        
-        if (!canvas) {
-            console.error('❌ لم يتم العثور على عنصر canvas!');
-            return false;
-        }
-        
+        if (!canvas) { console.error('❌ لم يتم العثور على canvas'); return false; }
         ctx = canvas.getContext('2d');
-        
-        if (!ctx) {
-            console.error('❌ فشل الحصول على سياق الرسم!');
-            return false;
-        }
-        
-        console.log('✅ تم الحصول على canvas و context');
-        
+        if (!ctx) { console.error('❌ فشل الحصول على سياق الرسم'); return false; }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
-        
         return true;
     }
 
     function resizeCanvas() {
         if (!canvas) return;
-        
         const parent = canvas.parentElement;
         if (!parent) return;
-        
         const rect = parent.getBoundingClientRect();
         const width = rect.width || window.innerWidth;
         const height = rect.height || (window.innerHeight - 150);
-        
-        console.log(`📐 تغيير حجم الكانفاس: ${width}x${height}`);
-        
         canvas.width = Math.max(width, 100);
         canvas.height = Math.max(height, 100);
-        
         addGround();
         updatePivotPosition();
         draw();
@@ -2047,21 +1107,10 @@
 
     function addGround() {
         if (!canvas) return;
-        
         const groundY = canvas.height - 48;
         const groundX = canvas.width / 2 - 105;
-        
         ground = { x: groundX, y: groundY, w: 210, h: 26 };
-        builtFloors = [{
-            x: groundX + ground.w / 2,
-            y: groundY + ground.h / 2,
-            w: ground.w,
-            h: ground.h,
-            floorNumber: 0,
-            isGround: true
-        }];
-        
-        console.log('✅ تم إضافة الأرض');
+        builtFloors = [{ x: groundX + ground.w / 2, y: groundY + ground.h / 2, w: ground.w, h: ground.h, floorNumber: 0, isGround: true }];
     }
 
     function updatePivotPosition() {
@@ -2083,7 +1132,6 @@
         addGround();
         updatePivotPosition();
         draw();
-        console.log('✅ تم إعادة تعيين حالة اللعبة');
     }
 
     function updateSwingPosition() {
@@ -2100,13 +1148,8 @@
             const speed = SPEEDS_BY_FLOOR[currentFloor] || MAX_SPEED;
             swinging.speed = speed;
             swinging.angle += swinging.direction * speed;
-            if (swinging.angle > swinging.maxAngle) {
-                swinging.angle = swinging.maxAngle;
-                swinging.direction = -1;
-            } else if (swinging.angle < -swinging.maxAngle) {
-                swinging.angle = -swinging.maxAngle;
-                swinging.direction = 1;
-            }
+            if (swinging.angle > swinging.maxAngle) { swinging.angle = swinging.maxAngle; swinging.direction = -1; }
+            else if (swinging.angle < -swinging.maxAngle) { swinging.angle = -swinging.maxAngle; swinging.direction = 1; }
             updateSwingPosition();
         }
     }
@@ -2118,7 +1161,6 @@
     }
 
     function getCanvasCoords(x, y) {
-        const rect = canvas.getBoundingClientRect();
         const areaRect = document.getElementById('gameCanvasArea').getBoundingClientRect();
         return {
             x: areaRect.left + (x / canvas.width) * areaRect.width,
@@ -2128,7 +1170,6 @@
 
     function drawFloor(x, y, w, h, floorNum, isGround = false) {
         if (!ctx) return;
-        
         if (isGround) {
             ctx.fillStyle = "#3a2a1a";
             ctx.shadowBlur = 4;
@@ -2137,11 +1178,9 @@
             ctx.fillRect(x - w / 2 + 4, y - h / 2, w - 8, 5);
             return;
         }
-
         if (floorImage.complete && floorImage.naturalWidth > 0) {
-            try {
-                ctx.drawImage(floorImage, x - w / 2, y - h / 2, w, h);
-            } catch (e) {
+            try { ctx.drawImage(floorImage, x - w / 2, y - h / 2, w, h); }
+            catch (e) {
                 const colors = ["#8B6914", "#B8860B", "#DAA520", "#FFD700"];
                 ctx.fillStyle = colors[floorNum % 4];
                 ctx.fillRect(x - w / 2, y - h / 2, w, h);
@@ -2151,10 +1190,8 @@
             ctx.fillStyle = colors[floorNum % 4];
             ctx.fillRect(x - w / 2, y - h / 2, w, h);
         }
-
         ctx.fillStyle = "#FFD700";
         ctx.fillRect(x - w / 2 + 4, y - h / 2, w - 8, 4);
-
         ctx.font = "bold 14px 'Segoe UI'";
         ctx.fillStyle = "#FFF8DC";
         ctx.shadowBlur = 2;
@@ -2163,14 +1200,9 @@
     }
 
     function draw() {
-        if (!ctx || !canvas) {
-            console.warn('⚠️ draw: canvas أو ctx غير جاهز');
-            return;
-        }
-
+        if (!ctx || !canvas) return;
         try {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             grad.addColorStop(0, "#0a0e27");
             grad.addColorStop(0.3, "#1a1a3e");
@@ -2193,9 +1225,7 @@
                 ctx.strokeStyle = "rgba(255,215,0,0.4)";
                 ctx.lineWidth = 2;
                 ctx.stroke();
-
                 drawFloor(swinging.x, swinging.y, swinging.w, swinging.h, currentFloor + 1, false);
-
                 ctx.beginPath();
                 ctx.arc(swinging.pivotX, swinging.pivotY, 5, 0, 2 * Math.PI);
                 ctx.fillStyle = "#FFD700";
@@ -2208,10 +1238,7 @@
             }
 
             ctx.restore();
-            
-        } catch (error) {
-            console.error('❌ خطأ في الرسم:', error);
-        }
+        } catch (error) { console.error('❌ خطأ في الرسم:', error); }
     }
 
     function gameLoop() {
@@ -2251,7 +1278,6 @@
         fallFloorNum = currentFloor + 1;
         fallVelY = 2;
 
-        // ✅ تشغيل صوت الإفلات
         audioManager.resume();
         audioManager.playDropSound();
 
@@ -2261,11 +1287,7 @@
 
     function startFallAnimation(expectedOverlap, requiredOverlap) {
         const fallInterval = setInterval(() => {
-            if (!isFalling) {
-                clearInterval(fallInterval);
-                return;
-            }
-
+            if (!isFalling) { clearInterval(fallInterval); return; }
             fallVelY += FALL_GRAVITY;
             fallPosY += fallVelY;
 
@@ -2274,7 +1296,6 @@
 
             if (fallPosY + fallH / 2 >= lastTop && fallVelY >= 0) {
                 clearInterval(fallInterval);
-
                 let finalY = lastTop - fallH / 2;
                 fallPosY = finalY;
 
@@ -2282,13 +1303,9 @@
                 const impactY = lastTop;
                 const coords = getCanvasCoords(impactX, impactY);
 
-                // اهتزاز
                 document.getElementById('gameCanvasArea').classList.add('shake');
-                setTimeout(() => {
-                    document.getElementById('gameCanvasArea').classList.remove('shake');
-                }, 350);
+                setTimeout(() => document.getElementById('gameCanvasArea').classList.remove('shake'), 350);
 
-                // غبار
                 const dust = document.createElement('div');
                 dust.className = 'dust-effect';
                 dust.style.left = (coords.x - 30) + 'px';
@@ -2296,7 +1313,6 @@
                 document.getElementById('gameCanvasArea').appendChild(dust);
                 setTimeout(() => dust.remove(), 700);
 
-                // مضاعف
                 const multipliers = { 1: 0.5, 2: 0.7, 3: 0.9, 4: 1.1, 5: 1.3, 6: 1.5, 7: 1.7, 8: 3.0, 9: 5.0, 10: 7.0, 11: 9.0, 12: 11.0, 13: 15.0 };
                 const mult = multipliers[fallFloorNum] || 0;
                 if (mult > 0) {
@@ -2342,17 +1358,12 @@
 
             if (data.success) {
                 if (data.result === 'completed') {
-                    // ✅ أكمل البرج - صوت الفوز الكامل
                     audioManager.playCompleteSound();
-                    
                     gameActive = false;
                     const profit = data.profit || 0;
                     userBalance += profit;
                     showNotification(`🏆 أكملت البرج بالكامل! ربح ${profit.toFixed(2)} SYP 🏆`, 'complete');
-                    
-                    // تأثير كونفيتي
                     createConfetti(80);
-                    
                     resetGameState();
                     showBetSelection();
                     document.getElementById('dropButton').disabled = true;
@@ -2362,9 +1373,7 @@
                     await loadGameState();
                     return;
                 } else if (data.result === 'continue') {
-                    // ✅ استمرار - صوت نجاح الطابق
                     audioManager.playWinSound();
-                    
                     currentFloor = data.floor_number;
                     pendingProfit = data.profit || 0;
                     currentMultiplier = data.multiplier || 0;
@@ -2392,9 +1401,7 @@
                     return;
                 }
             } else {
-                // ✅ خسارة - صوت الخسارة
                 audioManager.playLoseSound();
-                
                 gameActive = false;
                 const lostAmount = data.details?.lost_amount || 0;
                 showNotification(`💔 خسارة! ${data.message || 'انهار الطابق'} 💔`, 'error');
@@ -2407,7 +1414,6 @@
                 await loadGameState();
                 return;
             }
-
         } catch (error) {
             console.error('Drop error:', error);
             showNotification('خطأ في الاتصال', 'error');
@@ -2415,7 +1421,6 @@
             isFalling = false;
             waitingForLanding = false;
         }
-
         pendingResult = null;
     }
 
@@ -2451,9 +1456,7 @@
             isProcessingRequest = false;
 
             if (data.success) {
-                // ✅ صوت جمع الأرباح
                 audioManager.playCashoutSound();
-                
                 const profitAmount = data.profit || 0;
                 gameActive = false;
                 userBalance += profitAmount;
@@ -2476,7 +1479,6 @@
                 document.getElementById('cashoutButton').disabled = false;
                 document.getElementById('dropButton').disabled = false;
             }
-
         } catch (error) {
             console.error('Cashout error:', error);
             showNotification('خطأ في الاتصال', 'error');
@@ -2512,94 +1514,354 @@
             container.appendChild(piece);
         }
 
-        setTimeout(() => {
-            container.remove();
-        }, 3500);
+        setTimeout(() => container.remove(), 3500);
     }
 
     // ================================================================
-    //                      إحصائيات الأدمن
+    //                      ===== إدارة اللعبة (Admin) =====
     // ================================================================
-    async function loadGameStatsForAdmin() {
-        const content = document.getElementById('statsContent');
-        content.innerHTML = '<div style="text-align:center;padding:20px;"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل الإحصائيات...</p></div>';
+
+    // ----- تحميل الإعدادات للإدارة -----
+    async function adminLoadSettings() {
+        const loading = document.getElementById('adminSettingsLoading');
+        const form = document.getElementById('adminSettingsForm');
+        const fields = document.getElementById('adminSettingsFields');
+
+        loading.classList.remove('hidden');
+        form.classList.add('hidden');
+
+        try {
+            const res = await apiCall(`/api/spinix/admin/settings?admin_id=${ADMIN_ID}`);
+            if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل الإعدادات</p>'; return; }
+
+            const data = await res.json();
+            if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
+
+            const settings = data.settings || {};
+
+            const settingsKeys = [
+                { key: 'bet_amount', label: '💰 قيمة الرهان', type: 'number', default: '1000' },
+                { key: 'max_floors', label: '🏗️ عدد الطوابق', type: 'number', default: '13' },
+                { key: 'is_active', label: '✅ تفعيل اللعبة', type: 'checkbox', default: 'true' },
+                { key: 'min_required_overlap', label: '🎯 الحد الأدنى للتغطية', type: 'number', step: '0.1', default: '0.5' },
+                { key: 'deposit_required', label: '💰 الإيداع إجباري؟', type: 'checkbox', default: 'true' },
+                { key: 'deposit_min_amount', label: '💰 الحد الأدنى للإيداع', type: 'number', default: '2000' },
+                { key: 'deposit_check_hours', label: '⏰ مدة فحص الإيداع (ساعات)', type: 'number', default: '48' },
+                { key: 'deposit_reset_after_round', label: '🔄 إعادة تعيين الإيداع بعد الجولة', type: 'checkbox', default: 'true' },
+                { key: 'bg_image_url', label: '🖼️ رابط صورة الخلفية', type: 'text', default: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80' },
+                { key: 'floor_image_url', label: '🖼️ رابط صورة الطوابق', type: 'text', default: 'https://i.imgur.com/3zW7n8A.png' },
+                { key: 'logo_text', label: '📝 نص الشعار', type: 'text', default: 'SPINIX' },
+                { key: 'primary_color', label: '🎨 اللون الأساسي', type: 'color', default: '#FFD700' },
+                { key: 'secondary_color', label: '🎨 اللون الثانوي', type: 'color', default: '#FF6B35' },
+                { key: 'background_gradient_start', label: '🎨 بداية التدرج', type: 'color', default: '#0a0e27' },
+                { key: 'background_gradient_end', label: '🎨 نهاية التدرج', type: 'color', default: '#1a1a3e' }
+            ];
+
+            fields.innerHTML = '';
+            settingsKeys.forEach(setting => {
+                const value = settings[setting.key] !== undefined ? settings[setting.key] : setting.default;
+                const div = document.createElement('div');
+                div.className = 'admin-field';
+                div.innerHTML = `
+                    <label>${setting.label}</label>
+                    <input type="${setting.type}" id="admin_setting_${setting.key}" 
+                           value="${value}" 
+                           ${setting.step ? `step="${setting.step}"` : ''}
+                           ${setting.type === 'checkbox' ? (value === 'true' ? 'checked' : '') : ''}>
+                    <span style="font-size:8px;color:rgba(255,255,255,0.15);display:block;margin-top:1px;">${setting.key}</span>
+                `;
+                fields.appendChild(div);
+            });
+
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Admin load settings error:', error);
+            loading.innerHTML = `<p style="color:#e74c3c;">⚠️ خطأ: ${error.message}</p>`;
+        }
+    }
+
+    // ----- حفظ الإعدادات -----
+    async function adminSaveSettings() {
+        const btn = document.getElementById('adminSaveSettingsBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ جاري الحفظ...';
+
+        try {
+            const inputs = document.querySelectorAll('#adminSettingsFields .admin-field input');
+            const settings = {};
+
+            inputs.forEach(input => {
+                const key = input.id.replace('admin_setting_', '');
+                let value = input.type === 'checkbox' ? input.checked : input.value;
+                if (input.type === 'checkbox') value = value ? 'true' : 'false';
+                settings[key] = value;
+            });
+
+            let success = true;
+            for (const [key, value] of Object.entries(settings)) {
+                const res = await apiCall('/api/spinix/admin/setting', {
+                    method: 'PUT',
+                    body: JSON.stringify({ admin_id: ADMIN_ID, key: key, value: String(value) })
+                });
+
+                if (!res?.ok) { success = false; showNotification(`فشل حفظ ${key}`, 'error'); break; }
+                const data = await res.json();
+                if (!data.success) { success = false; showNotification(`فشل حفظ ${key}`, 'error'); break; }
+            }
+
+            if (success) {
+                showNotification('✅ تم حفظ جميع الإعدادات بنجاح!', 'success');
+                await adminLoadSettings();
+            }
+        } catch (error) {
+            console.error('Save settings error:', error);
+            showNotification('خطأ في حفظ الإعدادات', 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = '💾 حفظ جميع الإعدادات';
+    }
+
+    // ----- تحميل المضاعفات -----
+    async function adminLoadMultipliers() {
+        const loading = document.getElementById('adminMultipliersLoading');
+        const form = document.getElementById('adminMultipliersForm');
+        const fields = document.getElementById('adminMultipliersFields');
+
+        loading.classList.remove('hidden');
+        form.classList.add('hidden');
+
+        try {
+            const res = await apiCall(`/api/spinix/admin/settings?admin_id=${ADMIN_ID}`);
+            if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل المضاعفات</p>'; return; }
+
+            const data = await res.json();
+            if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
+
+            const multipliers = data.multipliers || {};
+
+            fields.innerHTML = '';
+            for (let i = 1; i <= 13; i++) {
+                const value = multipliers[i] !== undefined ? multipliers[i] : 0;
+                const div = document.createElement('div');
+                div.className = 'admin-multiplier-item';
+                div.innerHTML = `
+                    <label>🏗️ الطابق ${i}</label>
+                    <input type="number" id="admin_multiplier_${i}" value="${value}" step="0.1" min="0">
+                `;
+                fields.appendChild(div);
+            }
+
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Load multipliers error:', error);
+            loading.innerHTML = `<p style="color:#e74c3c;">⚠️ خطأ: ${error.message}</p>`;
+        }
+    }
+
+    // ----- حفظ المضاعفات -----
+    async function adminSaveMultipliers() {
+        const btn = document.getElementById('adminSaveMultipliersBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ جاري الحفظ...';
+
+        try {
+            const inputs = document.querySelectorAll('#adminMultipliersFields .admin-multiplier-item input');
+            const multipliers = {};
+
+            inputs.forEach(input => {
+                const floor = parseInt(input.id.replace('admin_multiplier_', ''));
+                multipliers[floor] = parseFloat(input.value) || 0;
+            });
+
+            const res = await apiCall('/api/spinix/admin/multipliers', {
+                method: 'PUT',
+                body: JSON.stringify({ admin_id: ADMIN_ID, multipliers: multipliers })
+            });
+
+            if (!res?.ok) { showNotification('فشل حفظ المضاعفات', 'error'); btn.disabled = false; btn.textContent = '💾 حفظ المضاعفات'; return; }
+
+            const data = await res.json();
+            if (data.success) {
+                showNotification('✅ تم حفظ المضاعفات بنجاح!', 'success');
+                await adminLoadMultipliers();
+            } else {
+                showNotification(data.error || 'فشل حفظ المضاعفات', 'error');
+            }
+        } catch (error) {
+            console.error('Save multipliers error:', error);
+            showNotification('خطأ في حفظ المضاعفات', 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = '💾 حفظ المضاعفات';
+    }
+
+    // ----- تحميل الإحصائيات -----
+    async function adminLoadStats() {
+        const loading = document.getElementById('adminStatsLoading');
+        const content = document.getElementById('adminStatsContent');
+
+        loading.classList.remove('hidden');
+        content.classList.add('hidden');
 
         try {
             const res = await apiCall(`/api/spinix/admin/stats/summary?admin_id=${ADMIN_ID}`);
-            if (!res?.ok) {
-                content.innerHTML = '<div style="text-align:center;padding:20px;color:#e74c3c;">⚠️ فشل تحميل الإحصائيات</div>';
-                return;
-            }
+            if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل الإحصائيات</p>'; return; }
 
             const data = await res.json();
-            if (!data.success) {
-                content.innerHTML = '<div style="text-align:center;padding:20px;color:#e74c3c;">⚠️ ' + (data.error || 'فشل التحميل') + '</div>';
-                return;
-            }
+            if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
 
             const stats = data.stats;
             const overall = stats.overall || {};
 
             content.innerHTML = `
-                <div class="stats-grid">
-                    <div class="stats-card"><div class="stats-card-icon">🎲</div><div class="stats-card-value">${(overall.total_games || 0).toLocaleString()}</div><div class="stats-card-label">إجمالي الألعاب</div></div>
-                    <div class="stats-card"><div class="stats-card-icon">🏆</div><div class="stats-card-value">${(overall.total_wins || 0).toLocaleString()}</div><div class="stats-card-label">فوز كامل</div></div>
-                    <div class="stats-card"><div class="stats-card-icon">💰</div><div class="stats-card-value">${(overall.total_cashouts || 0).toLocaleString()}</div><div class="stats-card-label">جمع أرباح</div></div>
-                    <div class="stats-card"><div class="stats-card-icon">💔</div><div class="stats-card-value">${(overall.total_losses || 0).toLocaleString()}</div><div class="stats-card-label">خسائر</div></div>
-                </div>
-                <div class="stats-section-title">💰 أرباح الموقع</div>
-                <div class="stats-card" style="background:rgba(0,0,0,0.3);margin-bottom:16px;">
-                    <div class="platform-profit ${(overall.net_result || 0) >= 0 ? 'positive' : 'negative'}">
-                        ${Math.abs(overall.net_result || 0).toLocaleString()} SYP
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value">${(overall.total_games || 0).toLocaleString()}</div>
+                        <div class="admin-stat-label">إجمالي الألعاب</div>
                     </div>
-                    <div class="stats-card-label">${(overall.net_result || 0) >= 0 ? '📈 ربح' : '📉 خسارة'}</div>
-                </div>
-                <div class="stats-section-title">📅 اليوم</div>
-                <div class="stats-grid">
-                    <div class="stats-card"><div class="stats-card-value">${(stats.today?.games || 0).toLocaleString()}</div><div class="stats-card-label">ألعاب</div></div>
-                    <div class="stats-card"><div class="stats-card-value" style="color:${(stats.today?.net_result || 0) >= 0 ? '#2ecc71' : '#e74c3c'}">${Math.abs(stats.today?.net_result || 0).toLocaleString()}</div><div class="stats-card-label">${(stats.today?.net_result || 0) >= 0 ? 'ربح' : 'خسارة'}</div></div>
-                </div>
-                <div class="stats-section-title">📊 أفضل اللاعبين</div>
-                ${(stats.top_players || []).slice(0, 5).map((p, i) => `
-                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px;">
-                        <span style="color:rgba(255,255,255,0.5);">#${i + 1} 🎮 ${p.user_id}</span>
-                        <span style="color:#FFD700;font-weight:700;">${(p.total_profit || 0).toFixed(2)} SYP</span>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:#2ecc71;">${(overall.total_wins || 0).toLocaleString()}</div>
+                        <div class="admin-stat-label">فوز كامل</div>
                     </div>
-                `).join('') || '<div style="color:rgba(255,255,255,0.2);text-align:center;padding:10px;">لا توجد بيانات</div>'}
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:#FFD700;">${(overall.total_cashouts || 0).toLocaleString()}</div>
+                        <div class="admin-stat-label">جمع أرباح</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:#e74c3c;">${(overall.total_losses || 0).toLocaleString()}</div>
+                        <div class="admin-stat-label">خسائر</div>
+                    </div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px;text-align:center;margin-bottom:12px;">
+                    <div style="font-size:24px;font-weight:900;color:${(overall.net_result || 0) >= 0 ? '#2ecc71' : '#e74c3c'};">
+                        ${(overall.net_result || 0) >= 0 ? '📈 ' : '📉 '} ${Math.abs(overall.net_result || 0).toLocaleString()} SYP
+                    </div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.3);">${(overall.net_result || 0) >= 0 ? 'ربح الموقع' : 'خسارة الموقع'}</div>
+                </div>
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value">${(stats.today?.games || 0).toLocaleString()}</div>
+                        <div class="admin-stat-label">ألعاب اليوم</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:${(stats.today?.net_result || 0) >= 0 ? '#2ecc71' : '#e74c3c'};">
+                            ${Math.abs(stats.today?.net_result || 0).toLocaleString()}
+                        </div>
+                        <div class="admin-stat-label">ربح/خسارة اليوم</div>
+                    </div>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05);margin-top:8px;">
+                    👥 ${(overall.unique_players || 0).toLocaleString()} لاعب · 🎯 نسبة الفوز: ${overall.win_rate || 0}%
+                </div>
+                ${(stats.top_players || []).length > 0 ? `
+                    <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.3);">🏆 أفضل اللاعبين:</div>
+                    ${stats.top_players.slice(0, 5).map((p, i) => `
+                        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:11px;">
+                            <span>#${i + 1} 🎮 ${p.user_id}</span>
+                            <span style="color:#FFD700;font-weight:700;">${(p.total_profit || 0).toFixed(2)} SYP</span>
+                        </div>
+                    `).join('')}
+                ` : ''}
             `;
 
+            loading.classList.add('hidden');
+            content.classList.remove('hidden');
+
         } catch (error) {
-            console.error('Stats error:', error);
-            content.innerHTML = '<div style="text-align:center;padding:20px;color:#e74c3c;">⚠️ خطأ في تحميل الإحصائيات</div>';
+            console.error('Load stats error:', error);
+            loading.innerHTML = `<p style="color:#e74c3c;">⚠️ خطأ: ${error.message}</p>`;
         }
     }
 
-    function openStatsModal() {
-        const modal = document.getElementById('statsModal');
-        modal.classList.add('visible');
-        loadGameStatsForAdmin();
+    // ----- إجراءات الإدارة -----
+    async function adminResetSpins(userId = null) {
+        if (!confirm(userId ? `هل أنت متأكد من حذف سجل المستخدم ${userId}؟` : 'هل أنت متأكد من حذف سجل جميع المستخدمين؟')) return;
+
+        try {
+            const body = { admin_id: ADMIN_ID };
+            if (userId) body.user_id = userId;
+
+            const res = await apiCall('/api/admin/wheel/reset-spins', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+
+            if (!res?.ok) { showNotification('فشل حذف السجل', 'error'); return; }
+
+            const data = await res.json();
+            if (data.success) {
+                showNotification(`✅ ${data.message}`, 'success');
+            } else {
+                showNotification(data.error || 'فشل الحذف', 'error');
+            }
+        } catch (error) {
+            console.error('Reset spins error:', error);
+            showNotification('خطأ في حذف السجل', 'error');
+        }
     }
 
-    function closeStatsModal() {
-        const modal = document.getElementById('statsModal');
-        modal.classList.remove('visible');
+    async function adminSeedPrizes() {
+        if (!confirm('هل أنت متأكد من إعادة تعيين الجوائز الافتراضية؟')) return;
+
+        try {
+            const res = await apiCall('/api/admin/wheel/seed-prizes', {
+                method: 'POST',
+                body: JSON.stringify({ admin_id: ADMIN_ID })
+            });
+
+            if (!res?.ok) { showNotification('فشل إعادة التعيين', 'error'); return; }
+
+            const data = await res.json();
+            if (data.success) {
+                showNotification('✅ تم إعادة تعيين الجوائز الافتراضية بنجاح!', 'success');
+            } else {
+                showNotification(data.error || 'فشل إعادة التعيين', 'error');
+            }
+        } catch (error) {
+            console.error('Seed prizes error:', error);
+            showNotification('خطأ في إعادة التعيين', 'error');
+        }
+    }
+
+    async function adminExportData(format) {
+        try {
+            const url = `/api/spinix/admin/export?admin_id=${ADMIN_ID}&format=${format}`;
+            const res = await apiCall(url);
+
+            if (!res?.ok) { showNotification('فشل تصدير البيانات', 'error'); return; }
+
+            const blob = await res.blob();
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `spinix_data.${format === 'csv' ? 'csv' : 'json'}`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            showNotification(`✅ تم تصدير البيانات بصيغة ${format.toUpperCase()}`, 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('خطأ في تصدير البيانات', 'error');
+        }
     }
 
     // ================================================================
-    //                      تهيئة اللعبة
+    //                      ===== التهيئة =====
     // ================================================================
+
     async function initGame() {
         try {
-            console.log('🚀 بدء تهيئة اللعبة...');
-            
             updateProgress(10, 'جاري إنشاء الخلفية...');
             createStars();
 
             updateProgress(20, 'جاري تهيئة الرسومات...');
             const canvasReady = initCanvas();
-            if (!canvasReady) {
-                throw new Error('فشل تهيئة الكانفاس');
-            }
+            if (!canvasReady) throw new Error('فشل تهيئة الكانفاس');
             resetGameState();
 
             updateProgress(30, 'جاري تحميل الإعدادات...');
@@ -2614,6 +1876,52 @@
             }
             updateProgress(40, 'تم التحقق من المستخدم');
 
+            if (USER_ID === ADMIN_ID) {
+                isAdmin = true;
+                document.getElementById('adminStatsBtn').classList.remove('hidden');
+                document.getElementById('adminFullBtn').classList.remove('hidden');
+                document.getElementById('adminFullBtn').addEventListener('click', () => {
+                    document.getElementById('adminFullModal').classList.add('visible');
+                    adminLoadSettings();
+                });
+                document.getElementById('closeAdminModal').addEventListener('click', () => {
+                    document.getElementById('adminFullModal').classList.remove('visible');
+                });
+                document.getElementById('adminFullModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('adminFullModal')) {
+                        document.getElementById('adminFullModal').classList.remove('visible');
+                    }
+                });
+
+                // تبويبات الإدارة
+                document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(`admin-tab-${btn.dataset.tab}`).classList.add('active');
+
+                        if (btn.dataset.tab === 'settings') adminLoadSettings();
+                        if (btn.dataset.tab === 'multipliers') adminLoadMultipliers();
+                        if (btn.dataset.tab === 'stats') adminLoadStats();
+                    });
+                });
+
+                // أزرار الإدارة
+                document.getElementById('adminSaveSettingsBtn').addEventListener('click', adminSaveSettings);
+                document.getElementById('adminSaveMultipliersBtn').addEventListener('click', adminSaveMultipliers);
+                document.getElementById('adminRefreshStatsBtn').addEventListener('click', adminLoadStats);
+                document.getElementById('adminResetSpinsBtn').addEventListener('click', () => adminResetSpins(null));
+                document.getElementById('adminResetSpecificUserBtn').addEventListener('click', () => {
+                    const userId = document.getElementById('adminResetUserIdInput').value.trim();
+                    if (userId) adminResetSpins(userId);
+                    else showNotification('الرجاء إدخال معرف المستخدم', 'warning');
+                });
+                document.getElementById('adminSeedPrizesBtn').addEventListener('click', adminSeedPrizes);
+                document.getElementById('adminExportCsvBtn').addEventListener('click', () => adminExportData('csv'));
+                document.getElementById('adminExportJsonBtn').addEventListener('click', () => adminExportData('json'));
+            }
+
             const wrapper = document.getElementById('gameWrapper');
             wrapper.style.display = 'flex';
             wrapper.classList.add('visible');
@@ -2626,23 +1934,20 @@
             gameLoop();
 
             updateProgress(80, 'جاري تهيئة الأزرار...');
-            
+
             document.getElementById('startGameBtn').addEventListener('click', startGame);
             document.getElementById('dropButton').addEventListener('click', attemptDrop);
             document.getElementById('cashoutButton').addEventListener('click', cashout);
             document.getElementById('teaserRefreshBtn').addEventListener('click', checkDepositStatus);
-            document.getElementById('refreshStatsBtn').addEventListener('click', loadGameStatsForAdmin);
 
-            document.getElementById('adminStatsBtn').addEventListener('click', openStatsModal);
-            document.getElementById('closeStatsModal').addEventListener('click', closeStatsModal);
-            document.getElementById('statsModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('statsModal')) closeStatsModal();
+            document.getElementById('adminStatsBtn').addEventListener('click', () => {
+                document.getElementById('adminFullModal').classList.add('visible');
+                adminLoadStats();
+                document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector('[data-tab="stats"]').classList.add('active');
+                document.getElementById('admin-tab-stats').classList.add('active');
             });
-
-            if (USER_ID === ADMIN_ID) {
-                document.getElementById('adminStatsBtn').classList.remove('hidden');
-                isAdmin = true;
-            }
 
             const betGrid = document.getElementById('betSelectionGrid');
             betGrid.innerHTML = `
@@ -2654,10 +1959,7 @@
             updateProgress(100, 'تم التحميل بنجاح!');
             isGameReady = true;
 
-            setTimeout(() => {
-                showLoading(false);
-            }, 500);
-
+            setTimeout(() => showLoading(false), 500);
             setInterval(checkDepositStatus, 30000);
 
             console.log('✅ تم تهيئة اللعبة بنجاح!');
@@ -2666,7 +1968,6 @@
             console.error('❌ خطأ في التهيئة:', error);
             updateProgress(100, '⚠️ فشل التحميل: ' + error.message);
             showNotification('⚠️ فشل تحميل اللعبة: ' + error.message, 'error');
-            
             const wrapper = document.getElementById('gameWrapper');
             wrapper.style.display = 'flex';
             wrapper.classList.add('visible');
@@ -2679,7 +1980,7 @@
     // ================================================================
     document.addEventListener('DOMContentLoaded', () => {
         console.log('📄 تم تحميل الصفحة');
-        
+
         let progress = 0;
         const interval = setInterval(() => {
             progress += Math.random() * 8;
@@ -2691,11 +1992,6 @@
             clearInterval(interval);
             updateProgress(90, 'جاري تجهيز اللعبة...');
             await new Promise(r => setTimeout(r, 400));
-
-            if (!imageLoaded) {
-                await new Promise(r => setTimeout(r, 500));
-            }
-
             await initGame();
         }, 500);
     });
