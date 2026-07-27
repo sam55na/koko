@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SPINIX | Golden Tower</title>
     <style>
-        /* ===== كل الـ CSS السابق ===== */
+        /* ================================================================
+           CSS المتقدم مع دعم المؤثرات الصوتية والبصرية
+           ================================================================ */
+
         * {
             margin: 0;
             padding: 0;
@@ -26,6 +29,7 @@
             color: #fff;
         }
 
+        /* ===== شاشة التحميل ===== */
         .loading-screen {
             position: fixed;
             inset: 0;
@@ -114,10 +118,11 @@
             margin-top: 12px;
         }
 
+        /* ===== حاوية اللعبة ===== */
         .game-wrapper {
             width: 100%;
             height: 100%;
-            display: none; /* ✅ يبدأ مخفياً */
+            display: none;
             flex-direction: column;
             opacity: 0;
             transition: opacity 0.8s ease;
@@ -129,6 +134,7 @@
             pointer-events: auto;
         }
 
+        /* ===== الهيدر ===== */
         .game-header {
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(26, 26, 62, 0.5));
             backdrop-filter: blur(20px);
@@ -189,12 +195,13 @@
             color: #fff;
         }
 
+        /* ===== منطقة الرسم ===== */
         .game-canvas-area {
             flex: 1;
             position: relative;
             background: radial-gradient(ellipse at center bottom, #1a2a4a 0%, #0a0e27 100%);
             overflow: hidden;
-            min-height: 200px; /* ✅ ضمان ارتفاع */
+            min-height: 200px;
         }
 
         .stars-container {
@@ -227,9 +234,10 @@
             position: relative;
             z-index: 1;
             cursor: pointer;
-            background: rgba(0,0,0,0.1); /* ✅ خلفية مؤقتة للتأكد من ظهور الكانفاس */
+            background: rgba(0,0,0,0.1);
         }
 
+        /* ===== المؤشرات ===== */
         .speed-indicator {
             position: absolute;
             bottom: 80px;
@@ -246,6 +254,7 @@
             font-weight: 600;
         }
 
+        /* ===== تأثيرات ===== */
         .dust-effect {
             position: absolute;
             width: 60px;
@@ -290,6 +299,68 @@
             75% { transform: translate(-4px, -3px); }
         }
 
+        /* ===== فلاش الفوز ===== */
+        .win-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.15), transparent 70%);
+            opacity: 0;
+            animation: winFlash 0.8s ease-out forwards;
+        }
+        @keyframes winFlash {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.5; }
+            100% { opacity: 0; }
+        }
+
+        .lose-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: radial-gradient(circle at center, rgba(231, 76, 60, 0.15), transparent 70%);
+            opacity: 0;
+            animation: loseFlash 0.6s ease-out forwards;
+        }
+        @keyframes loseFlash {
+            0% { opacity: 0; }
+            30% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* ===== كونفيتي ===== */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            animation: confettiFall 2s ease-in forwards;
+        }
+        @keyframes confettiFall {
+            0% { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); }
+            100% { opacity: 0; transform: translateY(120vh) rotate(720deg) scale(0.3); }
+        }
+
+        /* ===== طبقة اختيار الرهان ===== */
         .bet-selection-overlay {
             position: absolute;
             top: 0;
@@ -336,12 +407,6 @@
             margin-bottom: 20px;
         }
 
-        .bet-selection-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
         .bet-selection-chip {
             background: rgba(255, 215, 0, 0.05);
             border: 2px solid rgba(255, 215, 0, 0.15);
@@ -382,6 +447,7 @@
             transform: none;
         }
 
+        /* ===== الشريط السفلي ===== */
         .game-bottom-bar {
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(26, 26, 62, 0.6));
             backdrop-filter: blur(20px);
@@ -455,6 +521,7 @@
             border-radius: 20px;
         }
 
+        /* ===== حالة اللعبة ===== */
         .game-status {
             background: rgba(0, 0, 0, 0.3);
             text-align: center;
@@ -486,6 +553,7 @@
             50% { opacity: 0.3; transform: scale(0.7); }
         }
 
+        /* ===== الإشعارات ===== */
         .notification-container {
             position: fixed;
             top: 80px;
@@ -540,6 +608,7 @@
         .notification-icon { font-size: 22px; }
         .notification-text { font-size: 14px; }
 
+        /* ===== مودال الإحصائيات ===== */
         .stats-modal {
             position: fixed;
             top: 0;
@@ -654,6 +723,7 @@
             color: #fff;
         }
 
+        /* ===== مقتطف التشويق ===== */
         .teaser-overlay {
             position: absolute;
             top: 0;
@@ -935,7 +1005,7 @@
 </head>
 <body>
 
-<!-- شاشة التحميل -->
+<!-- ===== شاشة التحميل ===== -->
 <div id="loadingScreen" class="loading-screen">
     <div class="loading-container">
         <div class="spinix-logo-loading">SPINIX</div>
@@ -951,8 +1021,10 @@
     </div>
 </div>
 
-<!-- حاوية اللعبة -->
+<!-- ===== حاوية اللعبة ===== -->
 <div id="gameWrapper" class="game-wrapper">
+    
+    <!-- ===== الهيدر ===== -->
     <div class="game-header">
         <div class="header-logo">🏗️ SPINIX | GOLDEN TOWER</div>
         <div class="header-right">
@@ -964,12 +1036,19 @@
         </div>
     </div>
 
+    <!-- ===== منطقة الرسم ===== -->
     <div class="game-canvas-area" id="gameCanvasArea">
+        
+        <!-- النجوم -->
         <div class="stars-container" id="starsContainer"></div>
+        
+        <!-- الكانفاس -->
         <canvas id="gameCanvas"></canvas>
+        
+        <!-- المؤشرات -->
         <div class="speed-indicator" id="speedIndicator">⚡ 0.000</div>
 
-        <!-- Teaser -->
+        <!-- ===== مقتطف التشويق ===== -->
         <div class="teaser-overlay" id="teaserOverlay">
             <div class="teaser-content">
                 <div class="teaser-tower-icon">🏗️</div>
@@ -996,7 +1075,7 @@
             </div>
         </div>
 
-        <!-- اختيار الرهان -->
+        <!-- ===== طبقة اختيار الرهان ===== -->
         <div id="betSelectionOverlay" class="bet-selection-overlay">
             <div class="bet-selection-container">
                 <div class="bet-selection-title">✨ اختر رهانك ✨</div>
@@ -1005,8 +1084,10 @@
                 <button class="start-game-btn" id="startGameBtn">🎲 بدء اللعبة 🎲</button>
             </div>
         </div>
+        
     </div>
 
+    <!-- ===== الشريط السفلي ===== -->
     <div class="game-bottom-bar">
         <div class="multiplier-box">
             <div class="multiplier-label">🎯 مضاعف</div>
@@ -1019,16 +1100,17 @@
         </button>
     </div>
 
+    <!-- ===== حالة اللعبة ===== -->
     <div class="game-status" id="gameStatus">
         <span class="status-dot ready" id="statusDot"></span>
         <span id="statusText">✨ اختر رهانك ثم اضغط "بدء اللعبة"</span>
     </div>
 </div>
 
-<!-- الإشعارات -->
+<!-- ===== الإشعارات ===== -->
 <div id="notificationContainer" class="notification-container"></div>
 
-<!-- مودال الإحصائيات -->
+<!-- ===== مودال الإحصائيات ===== -->
 <div id="statsModal" class="stats-modal">
     <div class="stats-modal-content">
         <div class="stats-modal-header">
@@ -1045,7 +1127,7 @@
     </div>
 </div>
 
-<!-- خطأ المستخدم -->
+<!-- ===== خطأ المستخدم ===== -->
 <div class="error-container" id="errorContainer">
     <div class="error-icon">⚠️</div>
     <div class="error-title">يجب الدخول من البوت</div>
@@ -1056,6 +1138,9 @@
     <button class="btn-open-bot" onclick="window.open('https://t.me/IChancyBot', '_blank')">🚀 فتح البوت</button>
 </div>
 
+<!-- ================================================================
+     جافا سكريبت - النظام الكامل مع المؤثرات الصوتية
+     ================================================================ -->
 <script>
     // ================================================================
     //                      الإعدادات الأساسية
@@ -1073,6 +1158,327 @@
     let currentMultiplier = 0;
     let isProcessingRequest = false;
     let isGameReady = false;
+
+    // ================================================================
+    //                      نظام الصوت المتقدم
+    // ================================================================
+    class AudioManager {
+        constructor() {
+            this.initialized = false;
+            this.audioContext = null;
+            this.isMuted = false;
+            this.sounds = {};
+            
+            // تهيئة السياق الصوتي عند أول تفاعل
+            this._init();
+        }
+
+        _init() {
+            try {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.initialized = true;
+                console.log('🎵 نظام الصوت جاهز');
+            } catch (e) {
+                console.warn('Web Audio غير مدعوم');
+                this.initialized = false;
+            }
+        }
+
+        // ===== توليد الأصوات برمجياً =====
+
+        // 🎵 صوت بدء اللعبة
+        playStartSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                // ثلاث نغمات تصاعدية
+                [523, 659, 784].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, now + i * 0.1);
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.08, now + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.15);
+                    osc.start(now + i * 0.1);
+                    osc.stop(now + i * 0.1 + 0.15);
+                });
+            } catch (e) { console.warn('Start sound error:', e); }
+        }
+
+        // 🎵 صوت إفلات الطابق (Drop)
+        playDropSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                // صوت سقوط
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
+                osc.type = 'sawtooth';
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+
+                // تأثير ارتطام
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.frequency.setValueAtTime(400, now + 0.25);
+                osc2.frequency.exponentialRampToValueAtTime(200, now + 0.45);
+                osc2.type = 'sine';
+                gain2.gain.setValueAtTime(0.04, now + 0.25);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+                osc2.start(now + 0.25);
+                osc2.stop(now + 0.45);
+            } catch (e) { console.warn('Drop sound error:', e); }
+        }
+
+        // 🎵 صوت الفوز (Win)
+        playWinSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                // لحن منتصرة
+                const notes = [
+                    [523, 0.12, 0.06], [587, 0.12, 0.06], [659, 0.12, 0.06],
+                    [784, 0.2, 0.07], [659, 0.12, 0.06], [784, 0.12, 0.06],
+                    [880, 0.12, 0.06], [988, 0.25, 0.08], [880, 0.15, 0.06],
+                    [784, 0.15, 0.06], [880, 0.15, 0.06], [1175, 0.35, 0.09]
+                ];
+
+                notes.forEach(([freq, dur, vol], i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                    osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+                    const volVal = vol || 0.05;
+                    gain.gain.setValueAtTime(volVal, now + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + dur);
+                    osc.start(now + i * 0.08);
+                    osc.stop(now + i * 0.08 + dur);
+                });
+
+                // تأثير نهائي
+                setTimeout(() => {
+                    const t = ctx.currentTime;
+                    [523, 659, 784, 1047].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.frequency.setValueAtTime(freq, t + i * 0.06);
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.03, t + i * 0.06);
+                        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.2);
+                        osc.start(t + i * 0.06);
+                        osc.stop(t + i * 0.06 + 0.2);
+                    });
+                }, notes.length * 0.08 + 0.1);
+            } catch (e) { console.warn('Win sound error:', e); }
+        }
+
+        // 🎵 صوت الخسارة (Loss)
+        playLoseSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                // نغمات هابطة حزينة
+                const notes = [
+                    [440, 0.25, 0.04], [370, 0.25, 0.04],
+                    [330, 0.35, 0.05], [247, 0.5, 0.05]
+                ];
+
+                notes.forEach(([freq, dur, vol], i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, now + i * 0.2);
+                    osc.type = 'sawtooth';
+                    const volVal = vol || 0.04;
+                    gain.gain.setValueAtTime(volVal, now + i * 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.2 + dur);
+                    osc.start(now + i * 0.2);
+                    osc.stop(now + i * 0.2 + dur);
+                });
+
+                // تأثير نهاية حزين
+                setTimeout(() => {
+                    const t = ctx.currentTime;
+                    const osc2 = ctx.createOscillator();
+                    const gain2 = ctx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(ctx.destination);
+                    osc2.frequency.setValueAtTime(200, t);
+                    osc2.frequency.exponentialRampToValueAtTime(100, t + 0.6);
+                    osc2.type = 'sawtooth';
+                    gain2.gain.setValueAtTime(0.025, t);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+                    osc2.start(t);
+                    osc2.stop(t + 0.6);
+                }, notes.length * 0.2 + 0.1);
+            } catch (e) { console.warn('Lose sound error:', e); }
+        }
+
+        // 🎵 صوت جمع الأرباح (Cashout)
+        playCashoutSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                // صوت عملات متتالي
+                for (let i = 0; i < 12; i++) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    const freq = 800 + Math.sin(i * 1.5) * 150 + Math.sin(i * 0.7) * 80;
+                    osc.frequency.setValueAtTime(freq, now + i * 0.06);
+                    osc.type = 'sine';
+                    const vol = 0.02 + Math.sin(i * 0.5) * 0.01;
+                    gain.gain.setValueAtTime(Math.max(0.005, vol), now + i * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.05);
+                    osc.start(now + i * 0.06);
+                    osc.stop(now + i * 0.06 + 0.05);
+                }
+
+                // نغمة نهاية
+                setTimeout(() => {
+                    const t = ctx.currentTime;
+                    [523, 659, 784].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.frequency.setValueAtTime(freq, t + i * 0.08);
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.05, t + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.15);
+                        osc.start(t + i * 0.08);
+                        osc.stop(t + i * 0.08 + 0.15);
+                    });
+                }, 12 * 0.06 + 0.05);
+            } catch (e) { console.warn('Cashout sound error:', e); }
+        }
+
+        // 🎵 صوت إكمال البرج (Complete)
+        playCompleteSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                // لحن منتصر
+                const notes = [
+                    [523, 0.15, 0.05], [587, 0.15, 0.05], [659, 0.15, 0.05],
+                    [784, 0.15, 0.05], [880, 0.2, 0.06], [988, 0.2, 0.06],
+                    [1175, 0.3, 0.07], [1319, 0.3, 0.07], [1568, 0.4, 0.08]
+                ];
+
+                notes.forEach(([freq, dur, vol], i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, now + i * 0.07);
+                    osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+                    const volVal = vol || 0.05;
+                    gain.gain.setValueAtTime(volVal, now + i * 0.07);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + dur);
+                    osc.start(now + i * 0.07);
+                    osc.stop(now + i * 0.07 + dur);
+                });
+
+                // تأثير نهائي كبير
+                setTimeout(() => {
+                    const t = ctx.currentTime;
+                    [523, 659, 784, 1047, 1319].forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.frequency.setValueAtTime(freq, t + i * 0.05);
+                        osc.type = 'sine';
+                        gain.gain.setValueAtTime(0.04, t + i * 0.05);
+                        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.05 + 0.25);
+                        osc.start(t + i * 0.05);
+                        osc.stop(t + i * 0.05 + 0.25);
+                    });
+                }, notes.length * 0.07 + 0.1);
+
+                // تأثير إضافي
+                setTimeout(() => {
+                    const t = ctx.currentTime;
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(880, t);
+                    osc.frequency.exponentialRampToValueAtTime(1760, t + 0.5);
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.03, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                    osc.start(t);
+                    osc.stop(t + 0.5);
+                }, notes.length * 0.07 + 0.3);
+            } catch (e) { console.warn('Complete sound error:', e); }
+        }
+
+        // 🎵 صوت خطأ
+        playErrorSound() {
+            if (!this.initialized || this.isMuted) return;
+            try {
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+                osc.type = 'square';
+                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } catch (e) { console.warn('Error sound error:', e); }
+        }
+
+        // ===== تبديل كتم الصوت =====
+        toggleMute() {
+            this.isMuted = !this.isMuted;
+            return this.isMuted;
+        }
+
+        // ===== استئناف السياق الصوتي =====
+        resume() {
+            if (this.audioContext && this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+        }
+    }
+
+    // ===== إنشاء كائن الصوت =====
+    const audioManager = new AudioManager();
 
     // ================================================================
     //                      نظام إعادة محاولة الاتصال
@@ -1490,6 +1896,10 @@
         btn.disabled = true;
         btn.textContent = '⏳ جاري البدء...';
 
+        // ✅ تشغيل صوت البداية
+        audioManager.resume();
+        audioManager.playStartSound();
+
         try {
             const res = await apiCall('/api/spinix/start', {
                 method: 'POST',
@@ -1499,6 +1909,7 @@
             if (!res?.ok) {
                 const errorData = await res.json().catch(() => ({}));
                 showNotification(errorData.error || 'فشل بدء اللعبة', 'error');
+                audioManager.playErrorSound();
                 isProcessingRequest = false;
                 btn.disabled = false;
                 btn.textContent = '🎲 بدء اللعبة 🎲';
@@ -1527,6 +1938,7 @@
                 resetGameState();
             } else {
                 showNotification(data.error || 'فشل بدء الجولة', 'error');
+                audioManager.playErrorSound();
                 if (data.deposit_required) {
                     await checkDepositStatus();
                 }
@@ -1535,6 +1947,7 @@
         } catch (error) {
             console.error('Start game error:', error);
             showNotification('خطأ في الاتصال', 'error');
+            audioManager.playErrorSound();
             isProcessingRequest = false;
         }
 
@@ -1543,7 +1956,7 @@
     }
 
     // ================================================================
-    //                      دوال الرسم (Canvas) - مُصلحة بالكامل
+    //                      دوال الرسم (Canvas)
     // ================================================================
     let canvas, ctx;
     let cameraY = 0;
@@ -1588,7 +2001,6 @@
     };
     floorImage.src = 'https://i.postimg.cc/4xgFPsZ3/6c6603f0-8557-11f1-b3b3-c1f91893a2ea.png';
 
-    // ✅ دالة تهيئة الكانفاس - مُصلحة
     function initCanvas() {
         console.log('🎨 تهيئة الكانفاس...');
         canvas = document.getElementById('gameCanvas');
@@ -1607,16 +2019,12 @@
         
         console.log('✅ تم الحصول على canvas و context');
         
-        // ✅ ضمان الحجم الصحيح
         resizeCanvas();
-        
-        // ✅ إضافة مستمع تغيير الحجم
         window.addEventListener('resize', resizeCanvas);
         
         return true;
     }
 
-    // ✅ دالة تغيير الحجم - مُصلحة
     function resizeCanvas() {
         if (!canvas) return;
         
@@ -1632,13 +2040,11 @@
         canvas.width = Math.max(width, 100);
         canvas.height = Math.max(height, 100);
         
-        // ✅ إعادة رسم بعد تغيير الحجم
         addGround();
         updatePivotPosition();
         draw();
     }
 
-    // ✅ دوال الرسم الأساسية
     function addGround() {
         if (!canvas) return;
         
@@ -1756,7 +2162,6 @@
         ctx.shadowBlur = 0;
     }
 
-    // ✅ دالة الرسم الرئيسية - مُصلحة
     function draw() {
         if (!ctx || !canvas) {
             console.warn('⚠️ draw: canvas أو ctx غير جاهز');
@@ -1764,10 +2169,8 @@
         }
 
         try {
-            // مسح الكانفاس
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // خلفية متدرجة
             const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             grad.addColorStop(0, "#0a0e27");
             grad.addColorStop(0.3, "#1a1a3e");
@@ -1776,7 +2179,6 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // رسم الطوابق
             ctx.save();
             ctx.translate(0, -cameraY);
 
@@ -1785,7 +2187,6 @@
             }
 
             if (gameActive && !waitingForLanding && !isFalling && currentFloor < MAX_FLOOR) {
-                // الحبل
                 ctx.beginPath();
                 ctx.moveTo(swinging.pivotX, swinging.pivotY);
                 ctx.lineTo(swinging.x, swinging.y - swinging.h / 2 + 5);
@@ -1793,10 +2194,8 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // الطابق المتأرجح
                 drawFloor(swinging.x, swinging.y, swinging.w, swinging.h, currentFloor + 1, false);
 
-                // نقطة التعليق
                 ctx.beginPath();
                 ctx.arc(swinging.pivotX, swinging.pivotY, 5, 0, 2 * Math.PI);
                 ctx.fillStyle = "#FFD700";
@@ -1852,6 +2251,10 @@
         fallFloorNum = currentFloor + 1;
         fallVelY = 2;
 
+        // ✅ تشغيل صوت الإفلات
+        audioManager.resume();
+        audioManager.playDropSound();
+
         startFallAnimation(overlapWidth, requiredOverlap);
         await processServerDrop(overlapWidth, requiredOverlap, fallPosX);
     }
@@ -1879,11 +2282,13 @@
                 const impactY = lastTop;
                 const coords = getCanvasCoords(impactX, impactY);
 
+                // اهتزاز
                 document.getElementById('gameCanvasArea').classList.add('shake');
                 setTimeout(() => {
                     document.getElementById('gameCanvasArea').classList.remove('shake');
                 }, 350);
 
+                // غبار
                 const dust = document.createElement('div');
                 dust.className = 'dust-effect';
                 dust.style.left = (coords.x - 30) + 'px';
@@ -1891,6 +2296,7 @@
                 document.getElementById('gameCanvasArea').appendChild(dust);
                 setTimeout(() => dust.remove(), 700);
 
+                // مضاعف
                 const multipliers = { 1: 0.5, 2: 0.7, 3: 0.9, 4: 1.1, 5: 1.3, 6: 1.5, 7: 1.7, 8: 3.0, 9: 5.0, 10: 7.0, 11: 9.0, 12: 11.0, 13: 15.0 };
                 const mult = multipliers[fallFloorNum] || 0;
                 if (mult > 0) {
@@ -1926,6 +2332,7 @@
 
             if (!res?.ok) {
                 showNotification('فشل إفلات الطابق', 'error');
+                audioManager.playErrorSound();
                 isFalling = false;
                 waitingForLanding = false;
                 return;
@@ -1935,10 +2342,17 @@
 
             if (data.success) {
                 if (data.result === 'completed') {
+                    // ✅ أكمل البرج - صوت الفوز الكامل
+                    audioManager.playCompleteSound();
+                    
                     gameActive = false;
                     const profit = data.profit || 0;
                     userBalance += profit;
                     showNotification(`🏆 أكملت البرج بالكامل! ربح ${profit.toFixed(2)} SYP 🏆`, 'complete');
+                    
+                    // تأثير كونفيتي
+                    createConfetti(80);
+                    
                     resetGameState();
                     showBetSelection();
                     document.getElementById('dropButton').disabled = true;
@@ -1948,6 +2362,9 @@
                     await loadGameState();
                     return;
                 } else if (data.result === 'continue') {
+                    // ✅ استمرار - صوت نجاح الطابق
+                    audioManager.playWinSound();
+                    
                     currentFloor = data.floor_number;
                     pendingProfit = data.profit || 0;
                     currentMultiplier = data.multiplier || 0;
@@ -1975,6 +2392,9 @@
                     return;
                 }
             } else {
+                // ✅ خسارة - صوت الخسارة
+                audioManager.playLoseSound();
+                
                 gameActive = false;
                 const lostAmount = data.details?.lost_amount || 0;
                 showNotification(`💔 خسارة! ${data.message || 'انهار الطابق'} 💔`, 'error');
@@ -1991,6 +2411,7 @@
         } catch (error) {
             console.error('Drop error:', error);
             showNotification('خطأ في الاتصال', 'error');
+            audioManager.playErrorSound();
             isFalling = false;
             waitingForLanding = false;
         }
@@ -2019,6 +2440,7 @@
 
             if (!res?.ok) {
                 showNotification('فشل جمع الأرباح', 'error');
+                audioManager.playErrorSound();
                 isProcessingRequest = false;
                 document.getElementById('cashoutButton').disabled = false;
                 document.getElementById('dropButton').disabled = false;
@@ -2029,6 +2451,9 @@
             isProcessingRequest = false;
 
             if (data.success) {
+                // ✅ صوت جمع الأرباح
+                audioManager.playCashoutSound();
+                
                 const profitAmount = data.profit || 0;
                 gameActive = false;
                 userBalance += profitAmount;
@@ -2047,6 +2472,7 @@
                 await loadGameState();
             } else {
                 showNotification(data.error || 'فشل جمع الأرباح', 'error');
+                audioManager.playErrorSound();
                 document.getElementById('cashoutButton').disabled = false;
                 document.getElementById('dropButton').disabled = false;
             }
@@ -2054,10 +2480,41 @@
         } catch (error) {
             console.error('Cashout error:', error);
             showNotification('خطأ في الاتصال', 'error');
+            audioManager.playErrorSound();
             isProcessingRequest = false;
             document.getElementById('cashoutButton').disabled = false;
             document.getElementById('dropButton').disabled = false;
         }
+    }
+
+    // ================================================================
+    //                      تأثير الكونفيتي
+    // ================================================================
+    function createConfetti(count = 60) {
+        const container = document.createElement('div');
+        container.className = 'confetti-container';
+        document.getElementById('gameCanvasArea').appendChild(container);
+
+        const colors = ['#FFD700', '#FF6B35', '#FF0000', '#00FF00', '#00BFFF', '#FF00FF', '#FF69B4', '#FF4500', '#7CFC00', '#FFD700', '#FF6B35'];
+
+        for (let i = 0; i < count; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            const size = 6 + Math.random() * 14;
+            piece.style.width = size + 'px';
+            piece.style.height = size + 'px';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.top = Math.random() * 30 + '%';
+            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            piece.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+            piece.style.animationDelay = Math.random() * 0.8 + 's';
+            container.appendChild(piece);
+        }
+
+        setTimeout(() => {
+            container.remove();
+        }, 3500);
     }
 
     // ================================================================
@@ -2129,7 +2586,7 @@
     }
 
     // ================================================================
-    //                      تهيئة اللعبة - مُصلحة بالكامل
+    //                      تهيئة اللعبة
     // ================================================================
     async function initGame() {
         try {
@@ -2157,7 +2614,6 @@
             }
             updateProgress(40, 'تم التحقق من المستخدم');
 
-            // ✅ إظهار اللعبة
             const wrapper = document.getElementById('gameWrapper');
             wrapper.style.display = 'flex';
             wrapper.classList.add('visible');
@@ -2171,7 +2627,6 @@
 
             updateProgress(80, 'جاري تهيئة الأزرار...');
             
-            // ✅ إعداد الأزرار
             document.getElementById('startGameBtn').addEventListener('click', startGame);
             document.getElementById('dropButton').addEventListener('click', attemptDrop);
             document.getElementById('cashoutButton').addEventListener('click', cashout);
@@ -2189,7 +2644,6 @@
                 isAdmin = true;
             }
 
-            // ✅ تحديث الرهان في الواجهة
             const betGrid = document.getElementById('betSelectionGrid');
             betGrid.innerHTML = `
                 <div class="bet-selection-chip selected" style="grid-column: span 3; font-size:22px; padding:18px;">
@@ -2200,12 +2654,10 @@
             updateProgress(100, 'تم التحميل بنجاح!');
             isGameReady = true;
 
-            // ✅ إخفاء شاشة التحميل
             setTimeout(() => {
                 showLoading(false);
             }, 500);
 
-            // ✅ التحقق الدوري من الإيداع
             setInterval(checkDepositStatus, 30000);
 
             console.log('✅ تم تهيئة اللعبة بنجاح!');
@@ -2215,7 +2667,6 @@
             updateProgress(100, '⚠️ فشل التحميل: ' + error.message);
             showNotification('⚠️ فشل تحميل اللعبة: ' + error.message, 'error');
             
-            // ✅ محاولة عرض اللعبة حتى مع الخطأ
             const wrapper = document.getElementById('gameWrapper');
             wrapper.style.display = 'flex';
             wrapper.classList.add('visible');
@@ -2241,7 +2692,6 @@
             updateProgress(90, 'جاري تجهيز اللعبة...');
             await new Promise(r => setTimeout(r, 400));
 
-            // ✅ انتظار تحميل الصورة
             if (!imageLoaded) {
                 await new Promise(r => setTimeout(r, 500));
             }
