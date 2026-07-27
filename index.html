@@ -1421,7 +1421,7 @@
 </div>
 
 <!-- ================================================================
-     جافا سكريبت - النظام الكامل مع المؤثرات الصوتية
+     جافا سكريبت - النظام الكامل مع المؤثرات الصوتية وحفظ التقدم
      ================================================================ -->
 <script>
     // ================================================================
@@ -2101,6 +2101,129 @@
     }
 
     // ================================================================
+    //                      نظام حفظ تقدم اللاعب مؤقتاً
+    // ================================================================
+
+    // حفظ حالة اللعبة في localStorage
+    function saveGameState() {
+        try {
+            const gameState = {
+                user_id: USER_ID,
+                gameActive: gameActive,
+                currentFloor: currentFloor,
+                pendingProfit: pendingProfit,
+                currentMultiplier: currentMultiplier,
+                userBalance: userBalance,
+                builtFloors: builtFloors,
+                pivotOffsetY: pivotOffsetY,
+                targetCameraY: targetCameraY,
+                savedAt: Date.now()
+            };
+            localStorage.setItem('spinix_game_state', JSON.stringify(gameState));
+            console.log('💾 تم حفظ تقدم اللاعب مؤقتاً');
+        } catch (e) {
+            console.warn('⚠️ فشل حفظ حالة اللعبة:', e);
+        }
+    }
+
+    // استعادة حالة اللعبة من localStorage
+    function loadGameStateFromCache() {
+        try {
+            const saved = localStorage.getItem('spinix_game_state');
+            if (!saved) return null;
+
+            const gameState = JSON.parse(saved);
+            
+            // التحقق من صلاحية الحفظ (5 دقائق = 300000 مللي ثانية)
+            const now = Date.now();
+            const elapsed = now - gameState.savedAt;
+            const MAX_CACHE_TIME = 5 * 60 * 1000; // 5 دقائق
+
+            if (elapsed > MAX_CACHE_TIME) {
+                console.log('⏰ انتهت صلاحية التخزين المؤقت (أكثر من 5 دقائق)');
+                clearGameStateCache();
+                return null;
+            }
+
+            // التحقق من أن المستخدم نفسه
+            if (gameState.user_id !== USER_ID) {
+                console.log('👤 مستخدم مختلف، تجاهل التخزين المؤقت');
+                clearGameStateCache();
+                return null;
+            }
+
+            console.log(`📦 تم استعادة حالة اللعبة (${Math.floor(elapsed / 1000)} ثانية مضت)`);
+            return gameState;
+
+        } catch (e) {
+            console.warn('⚠️ فشل استعادة حالة اللعبة:', e);
+            clearGameStateCache();
+            return null;
+        }
+    }
+
+    // مسح التخزين المؤقت
+    function clearGameStateCache() {
+        localStorage.removeItem('spinix_game_state');
+        console.log('🗑️ تم مسح التخزين المؤقت');
+    }
+
+    // استعادة حالة اللعبة المحفوظة
+    function restoreGameState(gameState) {
+        if (!gameState) return false;
+
+        try {
+            gameActive = gameState.gameActive || false;
+            currentFloor = gameState.currentFloor || 0;
+            pendingProfit = gameState.pendingProfit || 0;
+            currentMultiplier = gameState.currentMultiplier || 0;
+            userBalance = gameState.userBalance || 0;
+            
+            if (gameState.builtFloors && gameState.builtFloors.length > 0) {
+                builtFloors = gameState.builtFloors;
+            }
+            
+            if (gameState.pivotOffsetY !== undefined) {
+                pivotOffsetY = gameState.pivotOffsetY;
+            }
+            
+            if (gameState.targetCameraY !== undefined) {
+                targetCameraY = gameState.targetCameraY;
+            }
+
+            // تحديث واجهة المستخدم
+            updateUI();
+            
+            if (gameActive) {
+                updateGameStatus(`🔄 استئناف الجولة - الطابق ${currentFloor + 1}`, 'playing');
+                document.getElementById('dropButton').disabled = false;
+                document.getElementById('cashoutButton').disabled = pendingProfit <= 0;
+                
+                // تحديث موقع البندول
+                updatePivotPosition();
+                draw();
+            }
+
+            console.log('✅ تم استعادة حالة اللعبة بنجاح');
+            return true;
+
+        } catch (e) {
+            console.warn('⚠️ فشل استعادة حالة اللعبة:', e);
+            clearGameStateCache();
+            return false;
+        }
+    }
+
+    // حفظ الحالة بشكل دوري (كل 10 ثوانٍ)
+    function startAutoSave() {
+        setInterval(() => {
+            if (gameActive || pendingProfit > 0 || currentFloor > 0) {
+                saveGameState();
+            }
+        }, 10000); // كل 10 ثوانٍ
+    }
+
+    // ================================================================
     //                      تحميل حالة اللعبة
     // ================================================================
     async function loadGameState() {
@@ -2177,6 +2300,9 @@
         const btn = document.getElementById('startGameBtn');
         btn.disabled = true;
         btn.textContent = '⏳ جاري البدء...';
+
+        // مسح التخزين المؤقت عند بدء جولة جديدة
+        clearGameStateCache();
 
         // ✅ تشغيل صوت البداية
         audioManager.resume();
@@ -2632,6 +2758,9 @@
                     userBalance += profit;
                     showNotification(`🏆 أكملت البرج بالكامل! ربح ${profit.toFixed(2)} SYP 🏆`, 'complete');
                     
+                    // مسح التخزين المؤقت بعد إكمال البرج
+                    clearGameStateCache();
+                    
                     // تأثير كونفيتي
                     createConfetti(80);
                     
@@ -2680,6 +2809,10 @@
                 gameActive = false;
                 const lostAmount = data.details?.lost_amount || 0;
                 showNotification(`💔 خسارة! ${data.message || 'انهار الطابق'} 💔`, 'error');
+                
+                // مسح التخزين المؤقت بعد الخسارة
+                clearGameStateCache();
+                
                 resetGameState();
                 showBetSelection();
                 document.getElementById('dropButton').disabled = true;
@@ -2731,7 +2864,7 @@
             });
 
             if (!res) {
-                showNotification('تم جمع الأرباح ✅');
+                showNotification('فشل الاتصال بالخادم', 'error');
                 audioManager.playErrorSound();
                 isProcessingRequest = false;
                 document.getElementById('cashoutButton').disabled = false;
@@ -2763,6 +2896,9 @@
                 pendingProfit = 0;
                 currentFloor = 0;
                 currentMultiplier = 0;
+
+                // مسح التخزين المؤقت بعد جمع الأرباح
+                clearGameStateCache();
 
                 showNotification(`💰 تم جمع ${Math.floor(profitAmount).toLocaleString()} SYP بنجاح! 💰`, 'cashout');
 
@@ -3263,7 +3399,40 @@
             updateProgress(50, 'تم تجهيز الواجهة');
 
             updateProgress(60, 'جاري تحميل حالة اللعبة...');
-            await loadGameState();
+
+            // ✅ محاولة استعادة الحالة من التخزين المؤقت
+            const cachedState = loadGameStateFromCache();
+            if (cachedState && restoreGameState(cachedState)) {
+                // تم استعادة الحالة بنجاح
+                showNotification('🔄 تم استئناف جولتك السابقة', 'info', 3000);
+                hideBetSelection();
+                document.getElementById('teaserOverlay').classList.remove('show');
+                // تحديث البندول والرسم
+                updatePivotPosition();
+                draw();
+            } else {
+                // لا توجد حالة محفوظة أو انتهت صلاحيتها، تحميل من السيرفر
+                await loadGameState();
+            }
+
+            // بدء الحفظ التلقائي
+            startAutoSave();
+
+            // حفظ الحالة عند إغلاق الصفحة أو مغادرتها
+            window.addEventListener('beforeunload', () => {
+                if (gameActive || pendingProfit > 0 || currentFloor > 0) {
+                    saveGameState();
+                }
+            });
+
+            // حفظ الحالة عند تصغير الصفحة أو تغيير التبويب
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    if (gameActive || pendingProfit > 0 || currentFloor > 0) {
+                        saveGameState();
+                    }
+                }
+            });
 
             updateProgress(70, 'جاري بدء حلقة الرسم...');
             gameLoop();
