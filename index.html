@@ -178,6 +178,7 @@
             color: #FFD700;
         }
 
+        /* ===== أزرار الإدارة ===== */
         .admin-stats-btn {
             background: rgba(52, 152, 219, 0.15);
             border: 1px solid rgba(52, 152, 219, 0.3);
@@ -193,6 +194,23 @@
         .admin-stats-btn:hover {
             background: #3498db;
             color: #fff;
+        }
+
+        .admin-full-btn {
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #FFD700;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .admin-full-btn:hover {
+            background: #FFD700;
+            color: #000;
         }
 
         /* ===== منطقة الرسم ===== */
@@ -723,6 +741,208 @@
             color: #fff;
         }
 
+        /* ===== مودال الإدارة الكاملة ===== */
+        .admin-full-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 16px;
+        }
+        .admin-full-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .admin-full-content {
+            background: linear-gradient(145deg, rgba(30, 30, 60, 0.98), rgba(20, 20, 50, 0.98));
+            border-radius: 30px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            animation: modalPop 0.3s ease;
+        }
+
+        .admin-full-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.1);
+            margin-bottom: 18px;
+        }
+        .admin-full-header h2 {
+            font-size: 22px;
+            color: #FFD700;
+            margin: 0;
+        }
+        .close-admin-modal {
+            font-size: 30px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.2s;
+        }
+        .close-admin-modal:hover { color: #e74c3c; transform: scale(1.1); }
+
+        /* ===== أنماط الإدارة ===== */
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .admin-tab-btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .admin-tab-btn:hover { background: rgba(255, 215, 0, 0.05); color: #fff; }
+        .admin-tab-btn.active { background: rgba(255, 215, 0, 0.1); border-color: #FFD700; color: #FFD700; }
+
+        .admin-tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .admin-tab-content.active { display: block; }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 480px) { .admin-grid { grid-template-columns: 1fr; } }
+
+        .admin-field {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .admin-field label {
+            display: block;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 3px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .admin-field input, .admin-field select {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .admin-field input:focus, .admin-field select:focus { border-color: #FFD700; outline: none; }
+        .admin-field input[type="checkbox"] { width: auto; width: 20px; height: 20px; cursor: pointer; }
+
+        .admin-multipliers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+        .admin-multiplier-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 8px 6px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .admin-multiplier-item label {
+            display: block;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 2px;
+        }
+        .admin-multiplier-item input {
+            width: 100%;
+            padding: 4px 4px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            font-family: inherit;
+        }
+        .admin-multiplier-item input:focus { border-color: #FFD700; outline: none; }
+
+        .admin-btn {
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            width: 100%;
+        }
+        .admin-btn:active { transform: scale(0.97); }
+        .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .admin-btn-save { background: linear-gradient(135deg, #FFD700, #FF6B35); color: #000; }
+        .admin-btn-danger { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+        .admin-btn-danger:hover { background: #e74c3c; color: #fff; }
+        .admin-btn-success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+        .admin-btn-success:hover { background: #2ecc71; color: #fff; }
+
+        .admin-actions { display: flex; flex-direction: column; gap: 10px; }
+        .admin-action-row { display: flex; gap: 8px; align-items: center; }
+        .admin-action-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-family: inherit;
+        }
+
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .admin-stat-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .admin-stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: #FFD700;
+        }
+        .admin-stat-label {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 2px;
+        }
+
         /* ===== مقتطف التشويق ===== */
         .teaser-overlay {
             position: absolute;
@@ -991,6 +1211,9 @@
             .stats-card-value { font-size: 18px; }
             .platform-profit { font-size: 22px; }
             .game-status { font-size: 10px; padding: 4px 10px; min-height: 24px; }
+            .admin-full-content { padding: 16px; }
+            .admin-grid { grid-template-columns: 1fr; }
+            .admin-multipliers-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
         }
 
         @media (max-width: 380px) {
@@ -1125,6 +1348,64 @@
             </div>
         </div>
         <button class="refresh-stats-btn" id="refreshStatsBtn">🔄 تحديث الإحصائيات</button>
+    </div>
+</div>
+
+<!-- ===== مودال الإدارة الكاملة ===== -->
+<div id="adminFullModal" class="admin-full-modal">
+    <div class="admin-full-content">
+        <div class="admin-full-header">
+            <h2>⚙️ إدارة SPINIX</h2>
+            <span class="close-admin-modal" id="closeAdminModal">&times;</span>
+        </div>
+
+        <!-- التبويبات -->
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" data-tab="settings">⚙️ إعدادات</button>
+            <button class="admin-tab-btn" data-tab="multipliers">📈 مضاعفات</button>
+            <button class="admin-tab-btn" data-tab="stats">📊 إحصائيات</button>
+            <button class="admin-tab-btn" data-tab="actions">⚡ إجراءات</button>
+        </div>
+
+        <!-- ===== تبويب الإعدادات ===== -->
+        <div id="admin-tab-settings" class="admin-tab-content active">
+            <div id="adminSettingsLoading"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل الإعدادات...</p></div>
+            <div id="adminSettingsForm" class="hidden">
+                <div class="admin-grid" id="adminSettingsFields"></div>
+                <button class="admin-btn admin-btn-save" id="adminSaveSettingsBtn">💾 حفظ جميع الإعدادات</button>
+            </div>
+        </div>
+
+        <!-- ===== تبويب المضاعفات ===== -->
+        <div id="admin-tab-multipliers" class="admin-tab-content">
+            <div id="adminMultipliersLoading"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل المضاعفات...</p></div>
+            <div id="adminMultipliersForm" class="hidden">
+                <div class="admin-multipliers-grid" id="adminMultipliersFields"></div>
+                <button class="admin-btn admin-btn-save" id="adminSaveMultipliersBtn" style="margin-top:12px;">💾 حفظ المضاعفات</button>
+            </div>
+        </div>
+
+        <!-- ===== تبويب الإحصائيات ===== -->
+        <div id="admin-tab-stats" class="admin-tab-content">
+            <div id="adminStatsLoading"><div class="spinner"></div><p style="color:rgba(255,255,255,0.3);font-size:13px;">جاري تحميل الإحصائيات...</p></div>
+            <div id="adminStatsContent" class="hidden"></div>
+            <button class="admin-btn admin-btn-success" id="adminRefreshStatsBtn" style="margin-top:12px;">🔄 تحديث الإحصائيات</button>
+        </div>
+
+        <!-- ===== تبويب الإجراءات ===== -->
+        <div id="admin-tab-actions" class="admin-tab-content">
+            <div class="admin-actions">
+                <button class="admin-btn admin-btn-danger" id="adminResetSpinsBtn">🗑️ حذف سجل التدويرات (جميع المستخدمين)</button>
+                <div class="admin-action-row">
+                    <input type="text" id="adminResetUserIdInput" placeholder="معرف المستخدم">
+                    <button class="admin-btn admin-btn-danger" id="adminResetSpecificUserBtn" style="width:auto;padding:8px 16px;">🗑️ حذف</button>
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="admin-btn admin-btn-success" id="adminExportCsvBtn" style="flex:1;">📄 CSV</button>
+                    <button class="admin-btn admin-btn-success" id="adminExportJsonBtn" style="flex:1;">📄 JSON</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -2629,6 +2910,325 @@
     }
 
     // ================================================================
+    //                      دوال إدارة SPINIX
+    // ================================================================
+
+    async function adminLoadSettings() {
+        const loading = document.getElementById('adminSettingsLoading');
+        const form = document.getElementById('adminSettingsForm');
+        const fields = document.getElementById('adminSettingsFields');
+
+        loading.classList.remove('hidden');
+        form.classList.add('hidden');
+
+        try {
+            const res = await apiCall(`/api/spinix/admin/settings?admin_id=${ADMIN_ID}`);
+            if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل الإعدادات</p>'; return; }
+
+            const data = await res.json();
+            if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
+
+            const settings = data.settings || {};
+
+            const settingsKeys = [
+                { key: 'bet_amount', label: '💰 قيمة الرهان', type: 'number', default: '1000' },
+                { key: 'max_floors', label: '🏗️ عدد الطوابق', type: 'number', default: '13' },
+                { key: 'is_active', label: '✅ تفعيل اللعبة', type: 'checkbox', default: 'true' },
+                { key: 'min_required_overlap', label: '🎯 الحد الأدنى للتغطية', type: 'number', step: '0.1', default: '0.5' },
+                { key: 'deposit_required', label: '💰 الإيداع إجباري؟', type: 'checkbox', default: 'true' },
+                { key: 'deposit_min_amount', label: '💰 الحد الأدنى للإيداع', type: 'number', default: '2000' },
+                { key: 'deposit_check_hours', label: '⏰ مدة فحص الإيداع (ساعات)', type: 'number', default: '48' },
+                { key: 'deposit_reset_after_round', label: '🔄 إعادة تعيين الإيداع بعد الجولة', type: 'checkbox', default: 'true' },
+                { key: 'bg_image_url', label: '🖼️ رابط صورة الخلفية', type: 'text', default: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1920&q=80' },
+                { key: 'floor_image_url', label: '🖼️ رابط صورة الطوابق', type: 'text', default: 'https://i.imgur.com/3zW7n8A.png' },
+                { key: 'logo_text', label: '📝 نص الشعار', type: 'text', default: 'SPINIX' },
+                { key: 'primary_color', label: '🎨 اللون الأساسي', type: 'color', default: '#FFD700' },
+                { key: 'secondary_color', label: '🎨 اللون الثانوي', type: 'color', default: '#FF6B35' },
+                { key: 'background_gradient_start', label: '🎨 بداية التدرج', type: 'color', default: '#0a0e27' },
+                { key: 'background_gradient_end', label: '🎨 نهاية التدرج', type: 'color', default: '#1a1a3e' }
+            ];
+
+            fields.innerHTML = '';
+            settingsKeys.forEach(setting => {
+                const value = settings[setting.key] !== undefined ? settings[setting.key] : setting.default;
+                const div = document.createElement('div');
+                div.className = 'admin-field';
+                div.innerHTML = `
+                    <label>${setting.label}</label>
+                    <input type="${setting.type}" id="admin_setting_${setting.key}" 
+                           value="${value}" 
+                           ${setting.step ? `step="${setting.step}"` : ''}
+                           ${setting.type === 'checkbox' ? (value === 'true' ? 'checked' : '') : ''}>
+                    <span style="font-size:8px;color:rgba(255,255,255,0.15);display:block;margin-top:1px;">${setting.key}</span>
+                `;
+                fields.appendChild(div);
+            });
+
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Admin load settings error:', error);
+            loading.innerHTML = `<p style="color:#e74c3c;">⚠️ خطأ: ${error.message}</p>`;
+        }
+    }
+
+    async function adminSaveSettings() {
+        const btn = document.getElementById('adminSaveSettingsBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ جاري الحفظ...';
+
+        try {
+            const inputs = document.querySelectorAll('#adminSettingsFields .admin-field input');
+            const settings = {};
+
+            inputs.forEach(input => {
+                const key = input.id.replace('admin_setting_', '');
+                let value = input.type === 'checkbox' ? input.checked : input.value;
+                if (input.type === 'checkbox') value = value ? 'true' : 'false';
+                settings[key] = value;
+            });
+
+            let success = true;
+            for (const [key, value] of Object.entries(settings)) {
+                const res = await apiCall('/api/spinix/admin/setting', {
+                    method: 'PUT',
+                    body: JSON.stringify({ admin_id: ADMIN_ID, key: key, value: String(value) })
+                });
+
+                if (!res?.ok) { success = false; showNotification(`فشل حفظ ${key}`, 'error'); break; }
+                const data = await res.json();
+                if (!data.success) { success = false; showNotification(`فشل حفظ ${key}: ${data.error}`, 'error'); break; }
+            }
+
+            if (success) {
+                showNotification('✅ تم حفظ جميع الإعدادات بنجاح!', 'success');
+                await adminLoadSettings();
+            }
+        } catch (error) {
+            console.error('Save settings error:', error);
+            showNotification('خطأ في حفظ الإعدادات', 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = '💾 حفظ جميع الإعدادات';
+    }
+
+    async function adminLoadMultipliers() {
+        const loading = document.getElementById('adminMultipliersLoading');
+        const form = document.getElementById('adminMultipliersForm');
+        const fields = document.getElementById('adminMultipliersFields');
+
+        loading.classList.remove('hidden');
+        form.classList.add('hidden');
+
+        try {
+            const res = await apiCall(`/api/spinix/admin/settings?admin_id=${ADMIN_ID}`);
+            if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل المضاعفات</p>'; return; }
+
+            const data = await res.json();
+            if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
+
+            const multipliers = data.multipliers || {};
+
+            fields.innerHTML = '';
+            for (let i = 1; i <= 13; i++) {
+                const value = multipliers[i] !== undefined ? multipliers[i] : 0;
+                const div = document.createElement('div');
+                div.className = 'admin-multiplier-item';
+                div.innerHTML = `
+                    <label>🏗️ الطابق ${i}</label>
+                    <input type="number" id="admin_multiplier_${i}" value="${value}" step="0.1" min="0">
+                `;
+                fields.appendChild(div);
+            }
+
+            loading.classList.add('hidden');
+            form.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Load multipliers error:', error);
+            loading.innerHTML = `<p style="color:#e74c3c;">⚠️ خطأ: ${error.message}</p>`;
+        }
+    }
+
+    async function adminSaveMultipliers() {
+        const btn = document.getElementById('adminSaveMultipliersBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ جاري الحفظ...';
+
+        try {
+            const inputs = document.querySelectorAll('#adminMultipliersFields .admin-multiplier-item input');
+            const multipliers = {};
+
+            inputs.forEach(input => {
+                const floor = parseInt(input.id.replace('admin_multiplier_', ''));
+                multipliers[floor] = parseFloat(input.value) || 0;
+            });
+
+            const res = await apiCall('/api/spinix/admin/multipliers', {
+                method: 'PUT',
+                body: JSON.stringify({ admin_id: ADMIN_ID, multipliers: multipliers })
+            });
+
+            if (!res?.ok) { showNotification('فشل حفظ المضاعفات', 'error'); btn.disabled = false; btn.textContent = '💾 حفظ المضاعفات'; return; }
+
+            const data = await res.json();
+            if (data.success) {
+                showNotification('✅ تم حفظ المضاعفات بنجاح!', 'success');
+                await adminLoadMultipliers();
+            } else {
+                showNotification(data.error || 'فشل حفظ المضاعفات', 'error');
+            }
+        } catch (error) {
+            console.error('Save multipliers error:', error);
+            showNotification('خطأ في حفظ المضاعفات', 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = '💾 حفظ المضاعفات';
+    }
+
+    async function adminLoadStats() {
+        const loading = document.getElementById('adminStatsLoading');
+        const content = document.getElementById('adminStatsContent');
+
+        loading.classList.remove('hidden');
+        content.classList.add('hidden');
+
+        try {
+            const res = await apiCall(`/api/spinix/admin/stats/summary?admin_id=${ADMIN_ID}`);
+            if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل الإحصائيات</p>'; return; }
+
+            const data = await res.json();
+            if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
+
+            const stats = data.stats;
+            const overall = stats.overall || {};
+
+            const safeNumber = (value) => {
+                const num = parseFloat(value);
+                return isNaN(num) ? 0 : num;
+            };
+
+            const safeFormat = (value) => {
+                const num = safeNumber(value);
+                return num.toLocaleString();
+            };
+
+            const safeFixed = (value, decimals = 2) => {
+                const num = safeNumber(value);
+                return num.toFixed(decimals);
+            };
+
+            content.innerHTML = `
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value">${safeFormat(overall.total_games)}</div>
+                        <div class="admin-stat-label">إجمالي الألعاب</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:#2ecc71;">${safeFormat(overall.total_wins)}</div>
+                        <div class="admin-stat-label">فوز كامل</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:#FFD700;">${safeFormat(overall.total_cashouts)}</div>
+                        <div class="admin-stat-label">جمع أرباح</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:#e74c3c;">${safeFormat(overall.total_losses)}</div>
+                        <div class="admin-stat-label">خسائر</div>
+                    </div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px;text-align:center;margin-bottom:12px;">
+                    <div style="font-size:24px;font-weight:900;color:${safeNumber(overall.net_result) >= 0 ? '#2ecc71' : '#e74c3c'};">
+                        ${safeNumber(overall.net_result) >= 0 ? '📈 ' : '📉 '} ${safeFormat(Math.abs(safeNumber(overall.net_result)))} SYP
+                    </div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.3);">${safeNumber(overall.net_result) >= 0 ? 'ربح الموقع' : 'خسارة الموقع'}</div>
+                </div>
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value">${safeFormat(stats.today?.games)}</div>
+                        <div class="admin-stat-label">ألعاب اليوم</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-value" style="color:${safeNumber(stats.today?.net_result) >= 0 ? '#2ecc71' : '#e74c3c'};">
+                            ${safeFormat(Math.abs(safeNumber(stats.today?.net_result)))}
+                        </div>
+                        <div class="admin-stat-label">ربح/خسارة اليوم</div>
+                    </div>
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.3);text-align:center;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05);margin-top:8px;">
+                    👥 ${safeFormat(overall.unique_players)} لاعب · 🎯 نسبة الفوز: ${safeNumber(overall.win_rate).toFixed(1)}%
+                </div>
+                ${(stats.top_players || []).length > 0 ? `
+                    <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.3);">🏆 أفضل اللاعبين:</div>
+                    ${stats.top_players.slice(0, 5).map((p, i) => `
+                        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.02);font-size:11px;">
+                            <span>#${i + 1} 🎮 ${p.user_id || 'غير معروف'}</span>
+                            <span style="color:#FFD700;font-weight:700;">${safeFixed(p.total_profit)} SYP</span>
+                        </div>
+                    `).join('')}
+                ` : ''}
+            `;
+
+            loading.classList.add('hidden');
+            content.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('Load stats error:', error);
+            loading.innerHTML = `<p style="color:#e74c3c;">⚠️ خطأ: ${error.message}</p>`;
+        }
+    }
+
+    async function adminResetSpins(userId = null) {
+        if (!confirm(userId ? `هل أنت متأكد من حذف سجل المستخدم ${userId}؟` : 'هل أنت متأكد من حذف سجل جميع المستخدمين؟')) return;
+
+        try {
+            const body = { admin_id: ADMIN_ID };
+            if (userId) body.user_id = userId;
+
+            const res = await apiCall('/api/admin/wheel/reset-spins', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+
+            if (!res?.ok) { showNotification('فشل حذف السجل', 'error'); return; }
+
+            const data = await res.json();
+            if (data.success) {
+                showNotification(`✅ ${data.message}`, 'success');
+            } else {
+                showNotification(data.error || 'فشل الحذف', 'error');
+            }
+        } catch (error) {
+            console.error('Reset spins error:', error);
+            showNotification('خطأ في حذف السجل', 'error');
+        }
+    }
+
+    async function adminExportData(format) {
+        try {
+            const url = `/api/spinix/admin/export?admin_id=${ADMIN_ID}&format=${format}`;
+            const res = await apiCall(url);
+
+            if (!res?.ok) { showNotification('فشل تصدير البيانات', 'error'); return; }
+
+            const blob = await res.blob();
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `spinix_data.${format === 'csv' ? 'csv' : 'json'}`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            showNotification(`✅ تم تصدير البيانات بصيغة ${format.toUpperCase()}`, 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('خطأ في تصدير البيانات', 'error');
+        }
+    }
+
+    // ================================================================
     //                      تهيئة اللعبة
     // ================================================================
     async function initGame() {
@@ -2684,7 +3284,55 @@
 
             if (USER_ID === ADMIN_ID) {
                 document.getElementById('adminStatsBtn').classList.remove('hidden');
+                document.getElementById('adminFullBtn').classList.remove('hidden');
                 isAdmin = true;
+
+                // ===== زر الإدارة الكاملة =====
+                document.getElementById('adminFullBtn').addEventListener('click', () => {
+                    document.getElementById('adminFullModal').classList.add('visible');
+                    document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                    document.querySelector('[data-tab="settings"]').classList.add('active');
+                    document.getElementById('admin-tab-settings').classList.add('active');
+                    adminLoadSettings();
+                });
+
+                document.getElementById('closeAdminModal').addEventListener('click', () => {
+                    document.getElementById('adminFullModal').classList.remove('visible');
+                });
+
+                document.getElementById('adminFullModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('adminFullModal')) {
+                        document.getElementById('adminFullModal').classList.remove('visible');
+                    }
+                });
+
+                // ===== تبويبات الإدارة =====
+                document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                        btn.classList.add('active');
+                        document.getElementById(`admin-tab-${btn.dataset.tab}`).classList.add('active');
+
+                        if (btn.dataset.tab === 'settings') adminLoadSettings();
+                        if (btn.dataset.tab === 'multipliers') adminLoadMultipliers();
+                        if (btn.dataset.tab === 'stats') adminLoadStats();
+                    });
+                });
+
+                // ===== أزرار الإدارة =====
+                document.getElementById('adminSaveSettingsBtn').addEventListener('click', adminSaveSettings);
+                document.getElementById('adminSaveMultipliersBtn').addEventListener('click', adminSaveMultipliers);
+                document.getElementById('adminRefreshStatsBtn').addEventListener('click', adminLoadStats);
+                document.getElementById('adminResetSpinsBtn').addEventListener('click', () => adminResetSpins(null));
+                document.getElementById('adminResetSpecificUserBtn').addEventListener('click', () => {
+                    const userId = document.getElementById('adminResetUserIdInput').value.trim();
+                    if (userId) adminResetSpins(userId);
+                    else showNotification('الرجاء إدخال معرف المستخدم', 'warning');
+                });
+                document.getElementById('adminExportCsvBtn').addEventListener('click', () => adminExportData('csv'));
+                document.getElementById('adminExportJsonBtn').addEventListener('click', () => adminExportData('json'));
             }
 
             const betGrid = document.getElementById('betSelectionGrid');
