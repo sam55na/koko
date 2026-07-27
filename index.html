@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SPINIX | Golden Tower + Admin</title>
+    <title>SPINIX | Golden Tower</title>
     <style>
-        /* ===== أنماط اللعبة (نفس الأنماط السابقة) ===== */
+        /* ================================================================
+           CSS - نفس الأنماط السابقة مع تحسينات بسيطة
+           ================================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', 'Poppins', 'Cairo', system-ui, sans-serif; }
         body { background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 40%, #0f1a2e 100%); color: #fff; }
@@ -414,10 +416,10 @@
 
         <!-- التبويبات -->
         <div class="admin-tabs">
-            <button class="admin-tab-btn active" data-tab="admin-settings">⚙️ إعدادات</button>
-            <button class="admin-tab-btn" data-tab="admin-multipliers">📈 مضاعفات</button>
-            <button class="admin-tab-btn" data-tab="admin-stats">📊 إحصائيات</button>
-            <button class="admin-tab-btn" data-tab="admin-actions">⚡ إجراءات</button>
+            <button class="admin-tab-btn active" data-tab="settings">⚙️ إعدادات</button>
+            <button class="admin-tab-btn" data-tab="multipliers">📈 مضاعفات</button>
+            <button class="admin-tab-btn" data-tab="stats">📊 إحصائيات</button>
+            <button class="admin-tab-btn" data-tab="actions">⚡ إجراءات</button>
         </div>
 
         <!-- ===== تبويب الإعدادات ===== -->
@@ -457,7 +459,6 @@
                     <button class="admin-btn admin-btn-success" id="adminExportCsvBtn" style="flex:1;">📄 CSV</button>
                     <button class="admin-btn admin-btn-success" id="adminExportJsonBtn" style="flex:1;">📄 JSON</button>
                 </div>
-                <button class="admin-btn admin-btn-danger" id="adminSeedPrizesBtn">🔄 إعادة تعيين الجوائز الافتراضية</button>
             </div>
         </div>
     </div>
@@ -475,7 +476,7 @@
 </div>
 
 <!-- ================================================================
-     جافا سكريبت - النظام الكامل
+     جافا سكريبت - النظام الكامل المُصلح
      ================================================================ -->
 <script>
     // ================================================================
@@ -509,22 +510,15 @@
             try {
                 this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 this.initialized = true;
-                console.log('🎵 نظام الصوت جاهز');
-            } catch (e) {
-                console.warn('Web Audio غير مدعوم');
-                this.initialized = false;
-            }
+            } catch (e) { console.warn('Web Audio غير مدعوم'); }
         }
         playStartSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
+                const ctx = this.audioContext, now = ctx.currentTime;
                 [523, 659, 784].forEach((freq, i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.frequency.setValueAtTime(freq, now + i * 0.1);
                     osc.type = 'sine';
                     gain.gain.setValueAtTime(0.08, now + i * 0.1);
@@ -537,111 +531,84 @@
         playDropSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
+                const ctx = this.audioContext, now = ctx.currentTime;
+                const osc = ctx.createOscillator(), gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
                 osc.frequency.setValueAtTime(200, now);
                 osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
                 osc.type = 'sawtooth';
                 gain.gain.setValueAtTime(0.06, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-                const osc2 = ctx.createOscillator();
-                const gain2 = ctx.createGain();
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
+                osc.start(now); osc.stop(now + 0.3);
+                const osc2 = ctx.createOscillator(), gain2 = ctx.createGain();
+                osc2.connect(gain2); gain2.connect(ctx.destination);
                 osc2.frequency.setValueAtTime(400, now + 0.25);
                 osc2.frequency.exponentialRampToValueAtTime(200, now + 0.45);
                 osc2.type = 'sine';
                 gain2.gain.setValueAtTime(0.04, now + 0.25);
                 gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-                osc2.start(now + 0.25);
-                osc2.stop(now + 0.45);
+                osc2.start(now + 0.25); osc2.stop(now + 0.45);
             } catch (e) { console.warn('Drop sound error:', e); }
         }
         playWinSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
-                const notes = [
-                    [523, 0.12, 0.06], [587, 0.12, 0.06], [659, 0.12, 0.06],
-                    [784, 0.2, 0.07], [659, 0.12, 0.06], [784, 0.12, 0.06],
-                    [880, 0.12, 0.06], [988, 0.25, 0.08], [880, 0.15, 0.06],
-                    [784, 0.15, 0.06], [880, 0.15, 0.06], [1175, 0.35, 0.09]
-                ];
-                notes.forEach(([freq, dur, vol], i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                const ctx = this.audioContext, now = ctx.currentTime;
+                const notes = [[523,0.12,0.06],[587,0.12,0.06],[659,0.12,0.06],[784,0.2,0.07],[659,0.12,0.06],[784,0.12,0.06],[880,0.12,0.06],[988,0.25,0.08],[880,0.15,0.06],[784,0.15,0.06],[880,0.15,0.06],[1175,0.35,0.09]];
+                notes.forEach(([freq,dur,vol],i) => {
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.frequency.setValueAtTime(freq, now + i * 0.08);
                     osc.type = i % 2 === 0 ? 'sine' : 'triangle';
                     const volVal = vol || 0.05;
                     gain.gain.setValueAtTime(volVal, now + i * 0.08);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + dur);
-                    osc.start(now + i * 0.08);
-                    osc.stop(now + i * 0.08 + dur);
+                    osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + dur);
                 });
             } catch (e) { console.warn('Win sound error:', e); }
         }
         playLoseSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
-                const notes = [[440, 0.25, 0.04], [370, 0.25, 0.04], [330, 0.35, 0.05], [247, 0.5, 0.05]];
-                notes.forEach(([freq, dur, vol], i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                const ctx = this.audioContext, now = ctx.currentTime;
+                const notes = [[440,0.25,0.04],[370,0.25,0.04],[330,0.35,0.05],[247,0.5,0.05]];
+                notes.forEach(([freq,dur,vol],i) => {
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.frequency.setValueAtTime(freq, now + i * 0.2);
                     osc.type = 'sawtooth';
                     const volVal = vol || 0.04;
                     gain.gain.setValueAtTime(volVal, now + i * 0.2);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.2 + dur);
-                    osc.start(now + i * 0.2);
-                    osc.stop(now + i * 0.2 + dur);
+                    osc.start(now + i * 0.2); osc.stop(now + i * 0.2 + dur);
                 });
             } catch (e) { console.warn('Lose sound error:', e); }
         }
         playCashoutSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
+                const ctx = this.audioContext, now = ctx.currentTime;
                 for (let i = 0; i < 12; i++) {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
                     const freq = 800 + Math.sin(i * 1.5) * 150 + Math.sin(i * 0.7) * 80;
                     osc.frequency.setValueAtTime(freq, now + i * 0.06);
                     osc.type = 'sine';
                     const vol = 0.02 + Math.sin(i * 0.5) * 0.01;
                     gain.gain.setValueAtTime(Math.max(0.005, vol), now + i * 0.06);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.05);
-                    osc.start(now + i * 0.06);
-                    osc.stop(now + i * 0.06 + 0.05);
+                    osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.05);
                 }
                 setTimeout(() => {
                     const t = ctx.currentTime;
-                    [523, 659, 784].forEach((freq, i) => {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(ctx.destination);
+                    [523,659,784].forEach((freq,i) => {
+                        const osc = ctx.createOscillator(), gain = ctx.createGain();
+                        osc.connect(gain); gain.connect(ctx.destination);
                         osc.frequency.setValueAtTime(freq, t + i * 0.08);
                         osc.type = 'sine';
                         gain.gain.setValueAtTime(0.05, t + i * 0.08);
                         gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.15);
-                        osc.start(t + i * 0.08);
-                        osc.stop(t + i * 0.08 + 0.15);
+                        osc.start(t + i * 0.08); osc.stop(t + i * 0.08 + 0.15);
                     });
                 }, 12 * 0.06 + 0.05);
             } catch (e) { console.warn('Cashout sound error:', e); }
@@ -649,44 +616,32 @@
         playCompleteSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
-                const notes = [
-                    [523, 0.15, 0.05], [587, 0.15, 0.05], [659, 0.15, 0.05],
-                    [784, 0.15, 0.05], [880, 0.2, 0.06], [988, 0.2, 0.06],
-                    [1175, 0.3, 0.07], [1319, 0.3, 0.07], [1568, 0.4, 0.08]
-                ];
-                notes.forEach(([freq, dur, vol], i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                const ctx = this.audioContext, now = ctx.currentTime;
+                const notes = [[523,0.15,0.05],[587,0.15,0.05],[659,0.15,0.05],[784,0.15,0.05],[880,0.2,0.06],[988,0.2,0.06],[1175,0.3,0.07],[1319,0.3,0.07],[1568,0.4,0.08]];
+                notes.forEach(([freq,dur,vol],i) => {
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.frequency.setValueAtTime(freq, now + i * 0.07);
                     osc.type = i % 2 === 0 ? 'sine' : 'triangle';
                     const volVal = vol || 0.05;
                     gain.gain.setValueAtTime(volVal, now + i * 0.07);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + dur);
-                    osc.start(now + i * 0.07);
-                    osc.stop(now + i * 0.07 + dur);
+                    osc.start(now + i * 0.07); osc.stop(now + i * 0.07 + dur);
                 });
             } catch (e) { console.warn('Complete sound error:', e); }
         }
         playErrorSound() {
             if (!this.initialized || this.isMuted) return;
             try {
-                const ctx = this.audioContext;
-                const now = ctx.currentTime;
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
+                const ctx = this.audioContext, now = ctx.currentTime;
+                const osc = ctx.createOscillator(), gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
                 osc.frequency.setValueAtTime(300, now);
                 osc.frequency.exponentialRampToValueAtTime(150, now + 0.2);
                 osc.type = 'square';
                 gain.gain.setValueAtTime(0.04, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-                osc.start(now);
-                osc.stop(now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
             } catch (e) { console.warn('Error sound error:', e); }
         }
         resume() {
@@ -1249,7 +1204,7 @@
     }
 
     // ================================================================
-    //                      إفلات الطابق (Drop)
+    //                      إفلات الطابق (Drop) - مُصلح
     // ================================================================
     async function attemptDrop() {
         if (isProcessingRequest || !gameActive) return;
@@ -1331,6 +1286,9 @@
         }, 16);
     }
 
+    // ================================================================
+    //                      معالجة استجابة السيرفر - مُصلحة
+    // ================================================================
     async function processServerDrop(expectedOverlap, requiredOverlap, positionX) {
         const floorNum = currentFloor + 1;
 
@@ -1355,8 +1313,10 @@
             }
 
             const data = await res.json();
+            console.log('📦 Drop response:', data);
 
             if (data.success) {
+                // ✅ نجاح - استمرار أو إكمال
                 if (data.result === 'completed') {
                     audioManager.playCompleteSound();
                     gameActive = false;
@@ -1401,10 +1361,18 @@
                     return;
                 }
             } else {
+                // ❌ فشل - خسارة
                 audioManager.playLoseSound();
                 gameActive = false;
-                const lostAmount = data.details?.lost_amount || 0;
                 showNotification(`💔 خسارة! ${data.message || 'انهار الطابق'} 💔`, 'error');
+                
+                // إنشاء تأثير الخسارة
+                const area = document.getElementById('gameCanvasArea');
+                const flash = document.createElement('div');
+                flash.className = 'lose-flash';
+                area.appendChild(flash);
+                setTimeout(() => flash.remove(), 600);
+                
                 resetGameState();
                 showBetSelection();
                 document.getElementById('dropButton').disabled = true;
@@ -1425,10 +1393,14 @@
     }
 
     // ================================================================
-    //                      جمع الأرباح (Cashout)
+    //                      جمع الأرباح (Cashout) - مُصلح
     // ================================================================
     async function cashout() {
-        if (isProcessingRequest || !gameActive || pendingProfit <= 0) {
+        if (isProcessingRequest) {
+            showNotification('جاري معالجة طلب سابق...', 'warning');
+            return;
+        }
+        if (!gameActive || pendingProfit <= 0) {
             showNotification('لا توجد أرباح لجمعها', 'warning');
             return;
         }
@@ -1453,6 +1425,7 @@
             }
 
             const data = await res.json();
+            console.log('💰 Cashout response:', data);
             isProcessingRequest = false;
 
             if (data.success) {
@@ -1465,6 +1438,9 @@
                 currentMultiplier = 0;
 
                 showNotification(`💰 تم جمع ${Math.floor(profitAmount).toLocaleString()} SYP بنجاح! 💰`, 'cashout');
+
+                // تأثير كونفيتي صغير
+                createConfetti(40);
 
                 resetGameState();
                 showBetSelection();
@@ -1535,6 +1511,8 @@
             if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل الإعدادات</p>'; return; }
 
             const data = await res.json();
+            console.log('📋 Admin settings:', data);
+            
             if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
 
             const settings = data.settings || {};
@@ -1608,7 +1586,7 @@
 
                 if (!res?.ok) { success = false; showNotification(`فشل حفظ ${key}`, 'error'); break; }
                 const data = await res.json();
-                if (!data.success) { success = false; showNotification(`فشل حفظ ${key}`, 'error'); break; }
+                if (!data.success) { success = false; showNotification(`فشل حفظ ${key}: ${data.error}`, 'error'); break; }
             }
 
             if (success) {
@@ -1638,6 +1616,8 @@
             if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل المضاعفات</p>'; return; }
 
             const data = await res.json();
+            console.log('📈 Multipliers data:', data);
+            
             if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
 
             const multipliers = data.multipliers || {};
@@ -1714,6 +1694,8 @@
             if (!res?.ok) { loading.innerHTML = '<p style="color:#e74c3c;">⚠️ فشل تحميل الإحصائيات</p>'; return; }
 
             const data = await res.json();
+            console.log('📊 Stats data:', data);
+            
             if (!data.success) { loading.innerHTML = `<p style="color:#e74c3c;">⚠️ ${data.error || 'فشل التحميل'}</p>`; return; }
 
             const stats = data.stats;
@@ -1806,29 +1788,6 @@
         }
     }
 
-    async function adminSeedPrizes() {
-        if (!confirm('هل أنت متأكد من إعادة تعيين الجوائز الافتراضية؟')) return;
-
-        try {
-            const res = await apiCall('/api/admin/wheel/seed-prizes', {
-                method: 'POST',
-                body: JSON.stringify({ admin_id: ADMIN_ID })
-            });
-
-            if (!res?.ok) { showNotification('فشل إعادة التعيين', 'error'); return; }
-
-            const data = await res.json();
-            if (data.success) {
-                showNotification('✅ تم إعادة تعيين الجوائز الافتراضية بنجاح!', 'success');
-            } else {
-                showNotification(data.error || 'فشل إعادة التعيين', 'error');
-            }
-        } catch (error) {
-            console.error('Seed prizes error:', error);
-            showNotification('خطأ في إعادة التعيين', 'error');
-        }
-    }
-
     async function adminExportData(format) {
         try {
             const url = `/api/spinix/admin/export?admin_id=${ADMIN_ID}&format=${format}`;
@@ -1880,13 +1839,17 @@
                 isAdmin = true;
                 document.getElementById('adminStatsBtn').classList.remove('hidden');
                 document.getElementById('adminFullBtn').classList.remove('hidden');
+                
+                // زر الإدارة الكاملة
                 document.getElementById('adminFullBtn').addEventListener('click', () => {
                     document.getElementById('adminFullModal').classList.add('visible');
                     adminLoadSettings();
                 });
+                
                 document.getElementById('closeAdminModal').addEventListener('click', () => {
                     document.getElementById('adminFullModal').classList.remove('visible');
                 });
+                
                 document.getElementById('adminFullModal').addEventListener('click', (e) => {
                     if (e.target === document.getElementById('adminFullModal')) {
                         document.getElementById('adminFullModal').classList.remove('visible');
@@ -1917,7 +1880,6 @@
                     if (userId) adminResetSpins(userId);
                     else showNotification('الرجاء إدخال معرف المستخدم', 'warning');
                 });
-                document.getElementById('adminSeedPrizesBtn').addEventListener('click', adminSeedPrizes);
                 document.getElementById('adminExportCsvBtn').addEventListener('click', () => adminExportData('csv'));
                 document.getElementById('adminExportJsonBtn').addEventListener('click', () => adminExportData('json'));
             }
@@ -1940,13 +1902,14 @@
             document.getElementById('cashoutButton').addEventListener('click', cashout);
             document.getElementById('teaserRefreshBtn').addEventListener('click', checkDepositStatus);
 
+            // زر الإحصائيات السريع
             document.getElementById('adminStatsBtn').addEventListener('click', () => {
                 document.getElementById('adminFullModal').classList.add('visible');
-                adminLoadStats();
                 document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
                 document.querySelector('[data-tab="stats"]').classList.add('active');
                 document.getElementById('admin-tab-stats').classList.add('active');
+                adminLoadStats();
             });
 
             const betGrid = document.getElementById('betSelectionGrid');
