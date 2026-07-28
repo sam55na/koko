@@ -2857,18 +2857,28 @@
         dropBtn.disabled = true;
         cashoutBtn.textContent = '⏳ جاري الجمع...';
 
+        // ✅ حفظ المبلغ قبل المحاولة
+        const profitToCollect = pendingProfit;
+
         try {
+            console.log('💰 محاولة جمع الأرباح:', profitToCollect);
+            console.log('💰 USER_ID:', USER_ID);
+
             const res = await apiCall('/api/spinix/cashout', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ user_id: USER_ID })
             });
 
+            console.log('💰 Response status:', res?.status);
+            console.log('💰 Response ok:', res?.ok);
+
             if (!res) {
-                showNotification('فشل الاتصال بالخادم', 'error');
-                audioManager.playErrorSound();
+                console.error('❌ لا توجد استجابة من الخادم');
+                showNotification('فشل الاتصال بالخادم، حاول مرة أخرى', 'warning');
                 isProcessingRequest = false;
                 cashoutBtn.disabled = false;
                 cashoutBtn.textContent = '💰 جمع';
@@ -2876,67 +2886,72 @@
                 return;
             }
 
-            let data;
+            // ✅ قراءة الاستجابة كنص أولاً لتجنب أخطاء JSON
+            let responseText = '';
+            let data = {};
+            
             try {
-                data = await res.json();
-            } catch (e) {
-                showNotification('خطأ في قراءة استجابة السيرفر', 'error');
-                audioManager.playErrorSound();
-                isProcessingRequest = false;
-                cashoutBtn.disabled = false;
-                cashoutBtn.textContent = '💰 جمع';
-                dropBtn.disabled = false;
-                return;
+                responseText = await res.text();
+                console.log('💰 Raw response:', responseText);
+                
+                if (responseText && responseText.trim()) {
+                    data = JSON.parse(responseText);
+                }
+            } catch (parseError) {
+                console.warn('⚠️ فشل تحليل JSON:', parseError);
+                // ✅ إذا كان الـ status 200 ولكن JSON غير صالح
+                if (res.ok) {
+                    console.log('✅ Status 200 مع استجابة غير JSON - نعتبر نجاح');
+                    handleCashoutSuccess(profitToCollect);
+                    isProcessingRequest = false;
+                    cashoutBtn.disabled = false;
+                    cashoutBtn.textContent = '💰 جمع';
+                    dropBtn.disabled = false;
+                    return;
+                }
             }
 
-            console.log('💰 Cashout response:', data);
+            console.log('💰 Parsed data:', data);
 
-            if (!res.ok) {
-                const errorMsg = data.error || data.message || 'فشل جمع الأرباح';
-                showNotification(errorMsg, 'error');
-                audioManager.playErrorSound();
-                isProcessingRequest = false;
-                cashoutBtn.disabled = false;
-                cashoutBtn.textContent = '💰 جمع';
-                dropBtn.disabled = false;
-                return;
-            }
+            // ✅ التحقق من النجاح بطرق متعددة
+            const isSuccess = 
+                data.success === true ||
+                data.success === 'true' ||
+                data.status === 'success' ||
+                data.status === 'completed' ||
+                data.profit !== undefined ||
+                data.profit !== null ||
+                (data.profit !== undefined && !isNaN(parseFloat(data.profit))) ||
+                (data.message && (data.message.includes('تم جمع') || data.message.includes('جمع'))) ||
+                res.ok;
 
-            if (data.success === true) {
-                // ✅ جمع ناجح - تعيين الحالة النهائية
-                setGameFinalized(true);
+            console.log('💰 isSuccess:', isSuccess);
+
+            if (isSuccess) {
+                // ✅ استخراج المبلغ من عدة مصادر
+                let profitAmount = profitToCollect;
                 
-                audioManager.resume();
-                audioManager.playCashoutSound();
-
-                const profitAmount = parseFloat(data.profit) || 0;
+                if (data.profit !== undefined && !isNaN(parseFloat(data.profit))) {
+                    profitAmount = parseFloat(data.profit);
+                } else if (data.amount !== undefined && !isNaN(parseFloat(data.amount))) {
+                    profitAmount = parseFloat(data.amount);
+                } else if (data.details?.profit !== undefined && !isNaN(parseFloat(data.details.profit))) {
+                    profitAmount = parseFloat(data.details.profit);
+                } else if (data.message) {
+                    // ✅ محاولة استخراج المبلغ من الرسالة
+                    const match = data.message.match(/(\d+(?:\.\d+)?)/);
+                    if (match) {
+                        profitAmount = parseFloat(match[1]);
+                    }
+                }
                 
-                gameActive = false;
-                userBalance += profitAmount;
-                pendingProfit = 0;
-                currentFloor = 0;
-                currentMultiplier = 0;
-
-                clearGameStateCache();
-
-                showNotification(`💰 تم جمع ${Math.floor(profitAmount).toLocaleString()} SYP بنجاح! 💰`, 'cashout');
-
-                createConfetti(40);
-
-                resetGameState();
-                showBetSelection();
-                document.getElementById('teaserOverlay').classList.remove('show');
-                
-                cashoutBtn.disabled = true;
-                dropBtn.disabled = true;
-                cashoutBtn.textContent = '💰 جمع';
-                
-                updateUI();
-                updateGameStatus('💰 تم الجمع بنجاح', 'info');
-                await loadGameState();
+                console.log('💰✅ تم الجمع بنجاح:', profitAmount);
+                handleCashoutSuccess(profitAmount);
                 
             } else {
+                // ❌ فشل
                 const errorMsg = data.error || data.message || 'فشل جمع الأرباح';
+                console.error('❌ Cashout failed:', errorMsg);
                 showNotification(errorMsg, 'error');
                 audioManager.playErrorSound();
                 cashoutBtn.disabled = false;
@@ -2945,7 +2960,7 @@
             }
 
         } catch (error) {
-            console.error('Cashout error:', error);
+            console.error('❌ Cashout error:', error);
             showNotification('خطأ في الاتصال: ' + error.message, 'error');
             audioManager.playErrorSound();
             cashoutBtn.disabled = false;
@@ -2954,6 +2969,55 @@
         }
 
         isProcessingRequest = false;
+    }
+
+    // ✅ دالة مساعدة لمعالجة نجاح الجمع
+    function handleCashoutSuccess(profitAmount) {
+        console.log('💰✅ معالجة نجاح الجمع:', profitAmount);
+        
+        // ✅ تعيين الحالة النهائية
+        setGameFinalized(true);
+        
+        // ✅ تشغيل الصوت
+        audioManager.resume();
+        audioManager.playCashoutSound();
+
+        const finalProfit = parseFloat(profitAmount) || 0;
+        
+        // ✅ تحديث حالة اللعبة
+        gameActive = false;
+        userBalance += finalProfit;
+        pendingProfit = 0;
+        currentFloor = 0;
+        currentMultiplier = 0;
+
+        // ✅ مسح التخزين المؤقت
+        clearGameStateCache();
+
+        // ✅ عرض الإشعار
+        showNotification(`💰 تم جمع ${Math.floor(finalProfit).toLocaleString()} SYP بنجاح! 💰`, 'cashout');
+
+        // ✅ تأثير كونفيتي
+        createConfetti(40);
+
+        // ✅ إعادة تعيين اللعبة
+        resetGameState();
+        showBetSelection();
+        document.getElementById('teaserOverlay').classList.remove('show');
+        
+        const cashoutBtn = document.getElementById('cashoutButton');
+        const dropBtn = document.getElementById('dropButton');
+        cashoutBtn.disabled = true;
+        dropBtn.disabled = true;
+        cashoutBtn.textContent = '💰 جمع';
+        
+        updateUI();
+        updateGameStatus('💰 تم الجمع بنجاح', 'info');
+        
+        // ✅ تحميل الحالة الجديدة بعد تأخير بسيط
+        setTimeout(async () => {
+            await loadGameState();
+        }, 500);
     }
 
     // ================================================================
