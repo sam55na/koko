@@ -1441,6 +1441,9 @@
     let isProcessingRequest = false;
     let isGameReady = false;
 
+    // ✅ متغير لتتبع ما إذا كانت الجولة في حالة نهائية (جمع أو فشل)
+    let isGameFinalized = false;
+
     // ================================================================
     //                      نظام الصوت المتقدم
     // ================================================================
@@ -1450,8 +1453,6 @@
             this.audioContext = null;
             this.isMuted = false;
             this.sounds = {};
-            
-            // تهيئة السياق الصوتي عند أول تفاعل
             this._init();
         }
 
@@ -1466,16 +1467,11 @@
             }
         }
 
-        // ===== توليد الأصوات برمجياً =====
-
-        // 🎵 صوت بدء اللعبة
         playStartSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // ثلاث نغمات تصاعدية
                 [523, 659, 784].forEach((freq, i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1491,14 +1487,11 @@
             } catch (e) { console.warn('Start sound error:', e); }
         }
 
-        // 🎵 صوت إفلات الطابق (Drop)
         playDropSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // صوت سقوط
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
@@ -1511,7 +1504,6 @@
                 osc.start(now);
                 osc.stop(now + 0.3);
 
-                // تأثير ارتطام
                 const osc2 = ctx.createOscillator();
                 const gain2 = ctx.createGain();
                 osc2.connect(gain2);
@@ -1526,21 +1518,17 @@
             } catch (e) { console.warn('Drop sound error:', e); }
         }
 
-        // 🎵 صوت الفوز (Win)
         playWinSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // لحن منتصرة
                 const notes = [
                     [523, 0.12, 0.06], [587, 0.12, 0.06], [659, 0.12, 0.06],
                     [784, 0.2, 0.07], [659, 0.12, 0.06], [784, 0.12, 0.06],
                     [880, 0.12, 0.06], [988, 0.25, 0.08], [880, 0.15, 0.06],
                     [784, 0.15, 0.06], [880, 0.15, 0.06], [1175, 0.35, 0.09]
                 ];
-
                 notes.forEach(([freq, dur, vol], i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1554,8 +1542,6 @@
                     osc.start(now + i * 0.08);
                     osc.stop(now + i * 0.08 + dur);
                 });
-
-                // تأثير نهائي
                 setTimeout(() => {
                     const t = ctx.currentTime;
                     [523, 659, 784, 1047].forEach((freq, i) => {
@@ -1574,19 +1560,15 @@
             } catch (e) { console.warn('Win sound error:', e); }
         }
 
-        // 🎵 صوت الخسارة (Loss)
         playLoseSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // نغمات هابطة حزينة
                 const notes = [
                     [440, 0.25, 0.04], [370, 0.25, 0.04],
                     [330, 0.35, 0.05], [247, 0.5, 0.05]
                 ];
-
                 notes.forEach(([freq, dur, vol], i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1600,8 +1582,6 @@
                     osc.start(now + i * 0.2);
                     osc.stop(now + i * 0.2 + dur);
                 });
-
-                // تأثير نهاية حزين
                 setTimeout(() => {
                     const t = ctx.currentTime;
                     const osc2 = ctx.createOscillator();
@@ -1619,14 +1599,11 @@
             } catch (e) { console.warn('Lose sound error:', e); }
         }
 
-        // 🎵 صوت جمع الأرباح (Cashout)
         playCashoutSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // صوت عملات متتالي
                 for (let i = 0; i < 12; i++) {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1641,8 +1618,6 @@
                     osc.start(now + i * 0.06);
                     osc.stop(now + i * 0.06 + 0.05);
                 }
-
-                // نغمة نهاية
                 setTimeout(() => {
                     const t = ctx.currentTime;
                     [523, 659, 784].forEach((freq, i) => {
@@ -1661,20 +1636,16 @@
             } catch (e) { console.warn('Cashout sound error:', e); }
         }
 
-        // 🎵 صوت إكمال البرج (Complete)
         playCompleteSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
-                // لحن منتصر
                 const notes = [
                     [523, 0.15, 0.05], [587, 0.15, 0.05], [659, 0.15, 0.05],
                     [784, 0.15, 0.05], [880, 0.2, 0.06], [988, 0.2, 0.06],
                     [1175, 0.3, 0.07], [1319, 0.3, 0.07], [1568, 0.4, 0.08]
                 ];
-
                 notes.forEach(([freq, dur, vol], i) => {
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
@@ -1688,8 +1659,6 @@
                     osc.start(now + i * 0.07);
                     osc.stop(now + i * 0.07 + dur);
                 });
-
-                // تأثير نهائي كبير
                 setTimeout(() => {
                     const t = ctx.currentTime;
                     [523, 659, 784, 1047, 1319].forEach((freq, i) => {
@@ -1705,8 +1674,6 @@
                         osc.stop(t + i * 0.05 + 0.25);
                     });
                 }, notes.length * 0.07 + 0.1);
-
-                // تأثير إضافي
                 setTimeout(() => {
                     const t = ctx.currentTime;
                     const osc = ctx.createOscillator();
@@ -1724,13 +1691,11 @@
             } catch (e) { console.warn('Complete sound error:', e); }
         }
 
-        // 🎵 صوت خطأ
         playErrorSound() {
             if (!this.initialized || this.isMuted) return;
             try {
                 const ctx = this.audioContext;
                 const now = ctx.currentTime;
-
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
@@ -1745,13 +1710,11 @@
             } catch (e) { console.warn('Error sound error:', e); }
         }
 
-        // ===== تبديل كتم الصوت =====
         toggleMute() {
             this.isMuted = !this.isMuted;
             return this.isMuted;
         }
 
-        // ===== استئناف السياق الصوتي =====
         resume() {
             if (this.audioContext && this.audioContext.state === 'suspended') {
                 this.audioContext.resume();
@@ -1759,7 +1722,6 @@
         }
     }
 
-    // ===== إنشاء كائن الصوت =====
     const audioManager = new AudioManager();
 
     // ================================================================
@@ -2101,12 +2063,33 @@
     }
 
     // ================================================================
-    //                      نظام حفظ تقدم اللاعب مؤقتاً
+    //                      نظام حفظ تقدم اللاعب المُحسّن
     // ================================================================
 
-    // حفظ حالة اللعبة في localStorage
+    // ✅ دالة لتعيين حالة الجولة النهائية
+    function setGameFinalized(finalized = true) {
+        isGameFinalized = finalized;
+        if (finalized) {
+            clearGameStateCache();
+            console.log('🗑️ تم مسح التخزين المؤقت - الجولة انتهت (جمع/فشل)');
+        }
+    }
+
+    // ✅ حفظ حالة اللعبة - فقط للجولات النشطة
     function saveGameState() {
         try {
+            // ❌ لا نحفظ إذا كانت الجولة منتهية
+            if (isGameFinalized) {
+                console.log('⏭️ تخطي الحفظ - الجولة في حالة نهائية');
+                return;
+            }
+
+            // ❌ لا نحفظ إذا لم تكن هناك جولة نشطة
+            if (!gameActive && currentFloor === 0 && pendingProfit === 0) {
+                console.log('⏭️ تخطي الحفظ - لا توجد جولة نشطة');
+                return;
+            }
+
             const gameState = {
                 user_id: USER_ID,
                 gameActive: gameActive,
@@ -2119,14 +2102,16 @@
                 targetCameraY: targetCameraY,
                 savedAt: Date.now()
             };
+            
             localStorage.setItem('spinix_game_state', JSON.stringify(gameState));
-            console.log('💾 تم حفظ تقدم اللاعب مؤقتاً');
+            console.log('💾 تم حفظ تقدم اللاعب مؤقتاً (جولة نشطة)');
+            
         } catch (e) {
             console.warn('⚠️ فشل حفظ حالة اللعبة:', e);
         }
     }
 
-    // استعادة حالة اللعبة من localStorage
+    // ✅ استعادة حالة اللعبة من localStorage
     function loadGameStateFromCache() {
         try {
             const saved = localStorage.getItem('spinix_game_state');
@@ -2134,13 +2119,13 @@
 
             const gameState = JSON.parse(saved);
             
-            // التحقق من صلاحية الحفظ (5 دقائق = 300000 مللي ثانية)
+            // التحقق من صلاحية الحفظ (5 دقائق)
             const now = Date.now();
             const elapsed = now - gameState.savedAt;
-            const MAX_CACHE_TIME = 5 * 60 * 1000; // 5 دقائق
+            const MAX_CACHE_TIME = 5 * 60 * 1000;
 
             if (elapsed > MAX_CACHE_TIME) {
-                console.log('⏰ انتهت صلاحية التخزين المؤقت (أكثر من 5 دقائق)');
+                console.log('⏰ انتهت صلاحية التخزين المؤقت');
                 clearGameStateCache();
                 return null;
             }
@@ -2148,6 +2133,13 @@
             // التحقق من أن المستخدم نفسه
             if (gameState.user_id !== USER_ID) {
                 console.log('👤 مستخدم مختلف، تجاهل التخزين المؤقت');
+                clearGameStateCache();
+                return null;
+            }
+
+            // ✅ التحقق من أن الجولة لا تزال نشطة
+            if (!gameState.gameActive && gameState.pendingProfit === 0) {
+                console.log('⏭️ الجولة منتهية، تجاهل التخزين المؤقت');
                 clearGameStateCache();
                 return null;
             }
@@ -2162,22 +2154,33 @@
         }
     }
 
-    // مسح التخزين المؤقت
+    // ✅ مسح التخزين المؤقت
     function clearGameStateCache() {
         localStorage.removeItem('spinix_game_state');
+        isGameFinalized = false;
         console.log('🗑️ تم مسح التخزين المؤقت');
     }
 
-    // استعادة حالة اللعبة المحفوظة
+    // ✅ استعادة حالة اللعبة المحفوظة
     function restoreGameState(gameState) {
         if (!gameState) return false;
 
         try {
+            // ✅ التحقق من أن الجولة لم تنته
+            if (!gameState.gameActive && gameState.pendingProfit === 0) {
+                console.log('⏭️ الجولة منتهية، لا حاجة للاستعادة');
+                clearGameStateCache();
+                return false;
+            }
+
             gameActive = gameState.gameActive || false;
             currentFloor = gameState.currentFloor || 0;
             pendingProfit = gameState.pendingProfit || 0;
             currentMultiplier = gameState.currentMultiplier || 0;
             userBalance = gameState.userBalance || 0;
+            
+            // ✅ تصفير الحالة النهائية عند الاستعادة
+            setGameFinalized(false);
             
             if (gameState.builtFloors && gameState.builtFloors.length > 0) {
                 builtFloors = gameState.builtFloors;
@@ -2191,15 +2194,12 @@
                 targetCameraY = gameState.targetCameraY;
             }
 
-            // تحديث واجهة المستخدم
             updateUI();
             
             if (gameActive) {
                 updateGameStatus(`🔄 استئناف الجولة - الطابق ${currentFloor + 1}`, 'playing');
                 document.getElementById('dropButton').disabled = false;
                 document.getElementById('cashoutButton').disabled = pendingProfit <= 0;
-                
-                // تحديث موقع البندول
                 updatePivotPosition();
                 draw();
             }
@@ -2214,13 +2214,13 @@
         }
     }
 
-    // حفظ الحالة بشكل دوري (كل 10 ثوانٍ)
+    // ✅ الحفظ التلقائي - فقط للجولات النشطة
     function startAutoSave() {
         setInterval(() => {
-            if (gameActive || pendingProfit > 0 || currentFloor > 0) {
+            if ((gameActive || pendingProfit > 0) && !isGameFinalized) {
                 saveGameState();
             }
-        }, 10000); // كل 10 ثوانٍ
+        }, 10000);
     }
 
     // ================================================================
@@ -2250,6 +2250,9 @@
                 currentFloor = game.current_floor || 0;
                 pendingProfit = game.pending_profit || 0;
                 currentMultiplier = game.current_multiplier || 0;
+
+                // ✅ تصفير الحالة النهائية
+                setGameFinalized(false);
 
                 updateUI();
                 updateGameStatus(`🔄 استئناف الجولة - الطابق ${currentFloor + 1}`, 'playing');
@@ -2301,10 +2304,10 @@
         btn.disabled = true;
         btn.textContent = '⏳ جاري البدء...';
 
-        // مسح التخزين المؤقت عند بدء جولة جديدة
+        // ✅ تصفير الحالة النهائية عند بدء جولة جديدة
+        setGameFinalized(false);
         clearGameStateCache();
 
-        // ✅ تشغيل صوت البداية
         audioManager.resume();
         audioManager.playStartSound();
 
@@ -2659,7 +2662,6 @@
         fallFloorNum = currentFloor + 1;
         fallVelY = 2;
 
-        // ✅ تشغيل صوت الإفلات
         audioManager.resume();
         audioManager.playDropSound();
 
@@ -2690,13 +2692,11 @@
                 const impactY = lastTop;
                 const coords = getCanvasCoords(impactX, impactY);
 
-                // اهتزاز
                 document.getElementById('gameCanvasArea').classList.add('shake');
                 setTimeout(() => {
                     document.getElementById('gameCanvasArea').classList.remove('shake');
                 }, 350);
 
-                // غبار
                 const dust = document.createElement('div');
                 dust.className = 'dust-effect';
                 dust.style.left = (coords.x - 30) + 'px';
@@ -2704,7 +2704,6 @@
                 document.getElementById('gameCanvasArea').appendChild(dust);
                 setTimeout(() => dust.remove(), 700);
 
-                // مضاعف
                 const multipliers = { 1: 0.5, 2: 0.7, 3: 0.9, 4: 1.1, 5: 1.3, 6: 1.5, 7: 1.7, 8: 3.0, 9: 5.0, 10: 7.0, 11: 9.0, 12: 11.0, 13: 15.0 };
                 const mult = multipliers[fallFloorNum] || 0;
                 if (mult > 0) {
@@ -2750,7 +2749,6 @@
 
             if (data.success) {
                 if (data.result === 'completed') {
-                    // ✅ أكمل البرج - صوت الفوز الكامل
                     audioManager.playCompleteSound();
                     
                     gameActive = false;
@@ -2758,10 +2756,9 @@
                     userBalance += profit;
                     showNotification(`🏆 أكملت البرج بالكامل! ربح ${profit.toFixed(2)} SYP 🏆`, 'complete');
                     
-                    // مسح التخزين المؤقت بعد إكمال البرج
-                    clearGameStateCache();
+                    // ✅ تعيين الحالة النهائية لإكمال البرج
+                    setGameFinalized(true);
                     
-                    // تأثير كونفيتي
                     createConfetti(80);
                     
                     resetGameState();
@@ -2773,7 +2770,6 @@
                     await loadGameState();
                     return;
                 } else if (data.result === 'continue') {
-                    // ✅ استمرار - صوت نجاح الطابق
                     audioManager.playWinSound();
                     
                     currentFloor = data.floor_number;
@@ -2803,14 +2799,14 @@
                     return;
                 }
             } else {
-                // ✅ خسارة - صوت الخسارة
+                // ❌ خسارة - تعيين الحالة النهائية
                 audioManager.playLoseSound();
+                setGameFinalized(true);
                 
                 gameActive = false;
                 const lostAmount = data.details?.lost_amount || 0;
                 showNotification(`💔 خسارة! ${data.message || 'انهار الطابق'} 💔`, 'error');
                 
-                // مسح التخزين المؤقت بعد الخسارة
                 clearGameStateCache();
                 
                 resetGameState();
@@ -2835,7 +2831,7 @@
     }
 
     // ================================================================
-    //                      جمع الأرباح (Cashout)
+    //                      جمع الأرباح (Cashout) - الإصدار المُصلح
     // ================================================================
     async function cashout() {
         if (isProcessingRequest) {
@@ -2854,21 +2850,29 @@
         }
 
         isProcessingRequest = true;
-        document.getElementById('cashoutButton').disabled = true;
-        document.getElementById('dropButton').disabled = true;
+        const cashoutBtn = document.getElementById('cashoutButton');
+        const dropBtn = document.getElementById('dropButton');
+        
+        cashoutBtn.disabled = true;
+        dropBtn.disabled = true;
+        cashoutBtn.textContent = '⏳ جاري الجمع...';
 
         try {
             const res = await apiCall('/api/spinix/cashout', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ user_id: USER_ID })
             });
 
             if (!res) {
-                showNotification('تم جمع المبلغ بنجاح ✅');
+                showNotification('فشل الاتصال بالخادم', 'error');
                 audioManager.playErrorSound();
                 isProcessingRequest = false;
-                document.getElementById('cashoutButton').disabled = false;
-                document.getElementById('dropButton').disabled = false;
+                cashoutBtn.disabled = false;
+                cashoutBtn.textContent = '💰 جمع';
+                dropBtn.disabled = false;
                 return;
             }
 
@@ -2879,53 +2883,74 @@
                 showNotification('خطأ في قراءة استجابة السيرفر', 'error');
                 audioManager.playErrorSound();
                 isProcessingRequest = false;
-                document.getElementById('cashoutButton').disabled = false;
-                document.getElementById('dropButton').disabled = false;
+                cashoutBtn.disabled = false;
+                cashoutBtn.textContent = '💰 جمع';
+                dropBtn.disabled = false;
                 return;
             }
 
             console.log('💰 Cashout response:', data);
 
+            if (!res.ok) {
+                const errorMsg = data.error || data.message || 'فشل جمع الأرباح';
+                showNotification(errorMsg, 'error');
+                audioManager.playErrorSound();
+                isProcessingRequest = false;
+                cashoutBtn.disabled = false;
+                cashoutBtn.textContent = '💰 جمع';
+                dropBtn.disabled = false;
+                return;
+            }
+
             if (data.success === true) {
-                // ✅ صوت جمع الأرباح
+                // ✅ جمع ناجح - تعيين الحالة النهائية
+                setGameFinalized(true);
+                
+                audioManager.resume();
                 audioManager.playCashoutSound();
 
                 const profitAmount = parseFloat(data.profit) || 0;
+                
                 gameActive = false;
                 userBalance += profitAmount;
                 pendingProfit = 0;
                 currentFloor = 0;
                 currentMultiplier = 0;
 
-                // مسح التخزين المؤقت بعد جمع الأرباح
                 clearGameStateCache();
 
                 showNotification(`💰 تم جمع ${Math.floor(profitAmount).toLocaleString()} SYP بنجاح! 💰`, 'cashout');
 
-                // تأثير كونفيتي صغير
                 createConfetti(40);
 
                 resetGameState();
                 showBetSelection();
-                document.getElementById('dropButton').disabled = true;
-                document.getElementById('cashoutButton').disabled = true;
+                document.getElementById('teaserOverlay').classList.remove('show');
+                
+                cashoutBtn.disabled = true;
+                dropBtn.disabled = true;
+                cashoutBtn.textContent = '💰 جمع';
+                
                 updateUI();
-                updateGameStatus('💰 تم الجمع', 'info');
+                updateGameStatus('💰 تم الجمع بنجاح', 'info');
                 await loadGameState();
+                
             } else {
                 const errorMsg = data.error || data.message || 'فشل جمع الأرباح';
                 showNotification(errorMsg, 'error');
                 audioManager.playErrorSound();
-                document.getElementById('cashoutButton').disabled = false;
-                document.getElementById('dropButton').disabled = false;
+                cashoutBtn.disabled = false;
+                cashoutBtn.textContent = '💰 جمع';
+                dropBtn.disabled = false;
             }
 
         } catch (error) {
             console.error('Cashout error:', error);
             showNotification('خطأ في الاتصال: ' + error.message, 'error');
             audioManager.playErrorSound();
-            document.getElementById('cashoutButton').disabled = false;
-            document.getElementById('dropButton').disabled = false;
+            cashoutBtn.disabled = false;
+            cashoutBtn.textContent = '💰 جمع';
+            dropBtn.disabled = false;
         }
 
         isProcessingRequest = false;
@@ -2984,7 +3009,6 @@
             const stats = data.stats;
             const overall = stats.overall || {};
 
-            // ✅ دالة آمنة لتحويل الأرقام مع منع الخطأ
             const safeNumber = (value) => {
                 const num = parseFloat(value);
                 return isNaN(num) ? 0 : num;
@@ -3403,32 +3427,26 @@
             // ✅ محاولة استعادة الحالة من التخزين المؤقت
             const cachedState = loadGameStateFromCache();
             if (cachedState && restoreGameState(cachedState)) {
-                // تم استعادة الحالة بنجاح
                 showNotification('🔄 تم استئناف جولتك السابقة', 'info', 3000);
                 hideBetSelection();
                 document.getElementById('teaserOverlay').classList.remove('show');
-                // تحديث البندول والرسم
                 updatePivotPosition();
                 draw();
             } else {
-                // لا توجد حالة محفوظة أو انتهت صلاحيتها، تحميل من السيرفر
                 await loadGameState();
             }
 
-            // بدء الحفظ التلقائي
             startAutoSave();
 
-            // حفظ الحالة عند إغلاق الصفحة أو مغادرتها
             window.addEventListener('beforeunload', () => {
-                if (gameActive || pendingProfit > 0 || currentFloor > 0) {
+                if ((gameActive || pendingProfit > 0) && !isGameFinalized) {
                     saveGameState();
                 }
             });
 
-            // حفظ الحالة عند تصغير الصفحة أو تغيير التبويب
             document.addEventListener('visibilitychange', () => {
                 if (document.visibilityState === 'hidden') {
-                    if (gameActive || pendingProfit > 0 || currentFloor > 0) {
+                    if ((gameActive || pendingProfit > 0) && !isGameFinalized) {
                         saveGameState();
                     }
                 }
@@ -3456,7 +3474,6 @@
                 document.getElementById('adminFullBtn').classList.remove('hidden');
                 isAdmin = true;
 
-                // ===== زر الإدارة الكاملة =====
                 document.getElementById('adminFullBtn').addEventListener('click', () => {
                     document.getElementById('adminFullModal').classList.add('visible');
                     document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
@@ -3476,7 +3493,6 @@
                     }
                 });
 
-                // ===== تبويبات الإدارة =====
                 document.querySelectorAll('.admin-tab-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
                         document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
@@ -3490,7 +3506,6 @@
                     });
                 });
 
-                // ===== أزرار الإدارة =====
                 document.getElementById('adminSaveSettingsBtn').addEventListener('click', adminSaveSettings);
                 document.getElementById('adminSaveMultipliersBtn').addEventListener('click', adminSaveMultipliers);
                 document.getElementById('adminRefreshStatsBtn').addEventListener('click', adminLoadStats);
