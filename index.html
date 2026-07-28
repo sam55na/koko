@@ -1427,7 +1427,7 @@
     // ================================================================
     //                      الإعدادات الأساسية
     // ================================================================
-    const API_BASE = 'https://kok-mopm.onrender.com'; // ✅ ضع رابط الخادم الخاص بك
+    const API_BASE = 'https://kok-mopm.onrender.com';
     const ADMIN_ID = 7011476249;
 
     let USER_ID = null;
@@ -1440,8 +1440,6 @@
     let currentMultiplier = 0;
     let isProcessingRequest = false;
     let isGameReady = false;
-
-    // ✅ متغير لتتبع ما إذا كانت الجولة في حالة نهائية (جمع أو فشل)
     let isGameFinalized = false;
 
     // ================================================================
@@ -1452,7 +1450,6 @@
             this.initialized = false;
             this.audioContext = null;
             this.isMuted = false;
-            this.sounds = {};
             this._init();
         }
 
@@ -1503,7 +1500,6 @@
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
                 osc.start(now);
                 osc.stop(now + 0.3);
-
                 const osc2 = ctx.createOscillator();
                 const gain2 = ctx.createGain();
                 osc2.connect(gain2);
@@ -1725,104 +1721,26 @@
     const audioManager = new AudioManager();
 
     // ================================================================
-    //                      نظام إعادة محاولة الاتصال
-    // ================================================================
-    class ConnectionManager {
-        constructor() {
-            this.maxRetries = 3;
-            this.retryDelay = 2000;
-            this.timeout = 50000;
-        }
-
-        async fetchWithRetry(url, options = {}, retryCount = 0) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-
-            try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                return response;
-            } catch (error) {
-                clearTimeout(timeoutId);
-
-                if (error.name === 'AbortError') {
-                    throw new Error('انتهت مهلة الاتصال بالخادم (50 ثانية)');
-                }
-
-                if (retryCount < this.maxRetries) {
-                    const delay = this.retryDelay * (retryCount + 1);
-                    console.log(`محاولة إعادة الاتصال ${retryCount + 1}/${this.maxRetries} بعد ${delay}ms`);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    return this.fetchWithRetry(url, options, retryCount + 1);
-                }
-
-                throw error;
-            }
-        }
-    }
-
-    const connectionManager = new ConnectionManager();
-
-    // ================================================================
-    //                      الحصول على USER_ID
-    // ================================================================
-    function getUserId() {
-        const params = new URLSearchParams(window.location.search);
-        let id = params.get('user_id') || params.get('userId') || params.get('id');
-        
-        if (id && !isNaN(id)) {
-            USER_ID = parseInt(id);
-            localStorage.setItem('spinix_user_id', USER_ID);
-            console.log('✅ USER_ID من الرابط:', USER_ID);
-            return USER_ID;
-        }
-        
-        try {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const user = window.Telegram.WebApp.initDataUnsafe?.user;
-                if (user && user.id) {
-                    USER_ID = user.id;
-                    localStorage.setItem('spinix_user_id', USER_ID);
-                    console.log('✅ USER_ID من Telegram:', USER_ID);
-                    return USER_ID;
-                }
-            }
-        } catch (e) {
-            console.warn('Telegram WebApp not available');
-        }
-        
-        id = localStorage.getItem('spinix_user_id');
-        if (id) {
-            USER_ID = parseInt(id);
-            console.log('✅ USER_ID من localStorage:', USER_ID);
-            return USER_ID;
-        }
-        
-        console.error('❌ لا يمكن الحصول على USER_ID');
-        return null;
-    }
-
-    // ================================================================
     //                      دوال API
     // ================================================================
     async function apiCall(endpoint, options = {}) {
         try {
-            const response = await connectionManager.fetchWithRetry(`${API_BASE}${endpoint}`, {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+            const response = await fetch(`${API_BASE}${endpoint}`, {
                 ...options,
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     ...options.headers
-                }
+                },
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
             return response;
+
         } catch (error) {
             console.error('API call failed:', error);
             return null;
@@ -2063,10 +1981,9 @@
     }
 
     // ================================================================
-    //                      نظام حفظ تقدم اللاعب المُحسّن
+    //                      نظام حفظ تقدم اللاعب
     // ================================================================
 
-    // ✅ دالة لتعيين حالة الجولة النهائية
     function setGameFinalized(finalized = true) {
         isGameFinalized = finalized;
         if (finalized) {
@@ -2075,16 +1992,13 @@
         }
     }
 
-    // ✅ حفظ حالة اللعبة - فقط للجولات النشطة
     function saveGameState() {
         try {
-            // ❌ لا نحفظ إذا كانت الجولة منتهية
             if (isGameFinalized) {
                 console.log('⏭️ تخطي الحفظ - الجولة في حالة نهائية');
                 return;
             }
 
-            // ❌ لا نحفظ إذا لم تكن هناك جولة نشطة
             if (!gameActive && currentFloor === 0 && pendingProfit === 0) {
                 console.log('⏭️ تخطي الحفظ - لا توجد جولة نشطة');
                 return;
@@ -2111,7 +2025,6 @@
         }
     }
 
-    // ✅ استعادة حالة اللعبة من localStorage
     function loadGameStateFromCache() {
         try {
             const saved = localStorage.getItem('spinix_game_state');
@@ -2119,7 +2032,6 @@
 
             const gameState = JSON.parse(saved);
             
-            // التحقق من صلاحية الحفظ (5 دقائق)
             const now = Date.now();
             const elapsed = now - gameState.savedAt;
             const MAX_CACHE_TIME = 5 * 60 * 1000;
@@ -2130,14 +2042,12 @@
                 return null;
             }
 
-            // التحقق من أن المستخدم نفسه
             if (gameState.user_id !== USER_ID) {
                 console.log('👤 مستخدم مختلف، تجاهل التخزين المؤقت');
                 clearGameStateCache();
                 return null;
             }
 
-            // ✅ التحقق من أن الجولة لا تزال نشطة
             if (!gameState.gameActive && gameState.pendingProfit === 0) {
                 console.log('⏭️ الجولة منتهية، تجاهل التخزين المؤقت');
                 clearGameStateCache();
@@ -2154,19 +2064,16 @@
         }
     }
 
-    // ✅ مسح التخزين المؤقت
     function clearGameStateCache() {
         localStorage.removeItem('spinix_game_state');
         isGameFinalized = false;
         console.log('🗑️ تم مسح التخزين المؤقت');
     }
 
-    // ✅ استعادة حالة اللعبة المحفوظة
     function restoreGameState(gameState) {
         if (!gameState) return false;
 
         try {
-            // ✅ التحقق من أن الجولة لم تنته
             if (!gameState.gameActive && gameState.pendingProfit === 0) {
                 console.log('⏭️ الجولة منتهية، لا حاجة للاستعادة');
                 clearGameStateCache();
@@ -2179,7 +2086,6 @@
             currentMultiplier = gameState.currentMultiplier || 0;
             userBalance = gameState.userBalance || 0;
             
-            // ✅ تصفير الحالة النهائية عند الاستعادة
             setGameFinalized(false);
             
             if (gameState.builtFloors && gameState.builtFloors.length > 0) {
@@ -2214,7 +2120,6 @@
         }
     }
 
-    // ✅ الحفظ التلقائي - فقط للجولات النشطة
     function startAutoSave() {
         setInterval(() => {
             if ((gameActive || pendingProfit > 0) && !isGameFinalized) {
@@ -2251,7 +2156,6 @@
                 pendingProfit = game.pending_profit || 0;
                 currentMultiplier = game.current_multiplier || 0;
 
-                // ✅ تصفير الحالة النهائية
                 setGameFinalized(false);
 
                 updateUI();
@@ -2304,7 +2208,6 @@
         btn.disabled = true;
         btn.textContent = '⏳ جاري البدء...';
 
-        // ✅ تصفير الحالة النهائية عند بدء جولة جديدة
         setGameFinalized(false);
         clearGameStateCache();
 
@@ -2756,7 +2659,6 @@
                     userBalance += profit;
                     showNotification(`🏆 أكملت البرج بالكامل! ربح ${profit.toFixed(2)} SYP 🏆`, 'complete');
                     
-                    // ✅ تعيين الحالة النهائية لإكمال البرج
                     setGameFinalized(true);
                     
                     createConfetti(80);
@@ -2799,7 +2701,6 @@
                     return;
                 }
             } else {
-                // ❌ خسارة - تعيين الحالة النهائية
                 audioManager.playLoseSound();
                 setGameFinalized(true);
                 
@@ -2857,15 +2758,13 @@
         dropBtn.disabled = true;
         cashoutBtn.textContent = '⏳ جاري الجمع...';
 
-        // ✅ حفظ المبلغ قبل المحاولة
         const profitToCollect = pendingProfit;
 
         try {
             console.log('💰 محاولة جمع الأرباح:', profitToCollect);
             console.log('💰 USER_ID:', USER_ID);
 
-            // ✅ استخدام fetch مباشرة بدلاً من apiCall لتجنب مشاكل التغليف
-            const response = await fetch(`${API_BASE}/api/spinix/cashout`, {
+            const res = await apiCall('/api/spinix/cashout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2874,49 +2773,53 @@
                 body: JSON.stringify({ user_id: USER_ID })
             });
 
-            console.log('💰 Response status:', response.status);
-            console.log('💰 Response ok:', response.ok);
-            console.log('💰 Response statusText:', response.statusText);
+            console.log('💰 Response status:', res?.status);
+            console.log('💰 Response ok:', res?.ok);
 
-            // ✅ قراءة الاستجابة كنص أولاً
-            let responseText = '';
-            try {
-                responseText = await response.text();
-                console.log('💰 Raw response text:', responseText);
-            } catch (textError) {
-                console.warn('⚠️ فشل قراءة النص:', textError);
+            if (!res) {
+                console.error('❌ لا توجد استجابة من الخادم');
+                showNotification('فشل الاتصال بالخادم، حاول مرة أخرى', 'warning');
+                isProcessingRequest = false;
+                cashoutBtn.disabled = false;
+                cashoutBtn.textContent = '💰 جمع';
+                dropBtn.disabled = false;
+                return;
             }
 
-            // ✅ محاولة تحليل JSON
+            let responseText = '';
             let data = {};
-            let parseSuccess = false;
             
             try {
+                responseText = await res.text();
+                console.log('💰 Raw response:', responseText);
+                
                 if (responseText && responseText.trim()) {
                     data = JSON.parse(responseText);
-                    parseSuccess = true;
-                    console.log('💰 Parsed data:', data);
                 }
             } catch (parseError) {
                 console.warn('⚠️ فشل تحليل JSON:', parseError);
+                if (res.ok) {
+                    console.log('✅ Status 200 مع استجابة غير JSON - نعتبر نجاح');
+                    handleCashoutSuccess(profitToCollect);
+                    isProcessingRequest = false;
+                    cashoutBtn.disabled = false;
+                    cashoutBtn.textContent = '💰 جمع';
+                    dropBtn.disabled = false;
+                    return;
+                }
             }
 
-            // ✅ التحقق من النجاح - بغض النظر عن حالة JSON
-            // إذا كان الـ status 200 أو 201، نعتبر العملية ناجحة
-            const isHttpSuccess = response.ok;
-            
-            // ✅ التحقق من نجاح JSON إذا كان موجوداً
-            const isJsonSuccess = parseSuccess && (
-                data.success === true ||
+            console.log('💰 Parsed data:', data);
+
+            const isHttpSuccess = res.ok;
+            const isJsonSuccess = data.success === true ||
                 data.success === 'true' ||
                 data.status === 'success' ||
                 data.status === 'completed' ||
                 data.profit !== undefined ||
                 data.profit !== null ||
-                (data.message && (data.message.includes('تم جمع') || data.message.includes('جمع')))
-            );
+                (data.message && (data.message.includes('تم جمع') || data.message.includes('جمع')));
 
-            // ✅ النجاح النهائي = نجاح HTTP أو نجاح JSON
             const isSuccess = isHttpSuccess || isJsonSuccess;
 
             console.log('💰 isHttpSuccess:', isHttpSuccess);
@@ -2924,30 +2827,24 @@
             console.log('💰 isSuccess (final):', isSuccess);
 
             if (isSuccess) {
-                // ✅ استخراج المبلغ من عدة مصادر
                 let profitAmount = profitToCollect;
                 
-                if (parseSuccess) {
-                    if (data.profit !== undefined && !isNaN(parseFloat(data.profit))) {
-                        profitAmount = parseFloat(data.profit);
-                    } else if (data.amount !== undefined && !isNaN(parseFloat(data.amount))) {
-                        profitAmount = parseFloat(data.amount);
-                    } else if (data.details?.profit !== undefined && !isNaN(parseFloat(data.details.profit))) {
-                        profitAmount = parseFloat(data.details.profit);
-                    } else if (data.message) {
-                        const match = data.message.match(/(\d+(?:\.\d+)?)/);
-                        if (match) {
-                            profitAmount = parseFloat(match[1]);
-                        }
+                if (data.profit !== undefined && !isNaN(parseFloat(data.profit))) {
+                    profitAmount = parseFloat(data.profit);
+                } else if (data.amount !== undefined && !isNaN(parseFloat(data.amount))) {
+                    profitAmount = parseFloat(data.amount);
+                } else if (data.details?.profit !== undefined && !isNaN(parseFloat(data.details.profit))) {
+                    profitAmount = parseFloat(data.details.profit);
+                } else if (data.message) {
+                    const match = data.message.match(/(\d+(?:\.\d+)?)/);
+                    if (match) {
+                        profitAmount = parseFloat(match[1]);
                     }
                 }
                 
                 console.log('💰✅ تم الجمع بنجاح - المبلغ:', profitAmount);
-                
-                // ✅ معالجة النجاح
                 handleCashoutSuccess(profitAmount);
                 
-                // ✅ ننهي الدالة هنا
                 isProcessingRequest = false;
                 cashoutBtn.disabled = false;
                 cashoutBtn.textContent = '💰 جمع';
@@ -2955,12 +2852,12 @@
                 return;
                 
             } else {
-                // ❌ فشل حقيقي
                 let errorMsg = 'فشل جمع الأرباح';
-                if (parseSuccess) {
-                    errorMsg = data.error || data.message || 'فشل جمع الأرباح';
+                if (data.error) {
+                    errorMsg = data.error;
+                } else if (data.message) {
+                    errorMsg = data.message;
                 } else if (responseText) {
-                    // ✅ إذا كان هناك نص استجابة ولكن ليس JSON
                     errorMsg = responseText.substring(0, 100) || 'فشل جمع الأرباح';
                 }
                 
@@ -2974,15 +2871,10 @@
 
         } catch (error) {
             console.error('❌ Cashout error:', error);
-            
-            // ✅ حتى في حالة الخطأ، قد يكون الخادم قد سجل الجمع
-            // نعطي المستخدم خيار التحقق أو إعادة المحاولة
             showNotification('حدث خطأ غير متوقع، تحقق من رصيدك', 'warning');
             
-            // ✅ نعطي فرصة ثانية
             setTimeout(async () => {
                 await loadGameState();
-                // ✅ إذا تم تحديث الرصيد، نعتبر العملية ناجحة
                 if (userBalance > 0) {
                     showNotification('✅ تم تحديث الرصيد بنجاح', 'success');
                 }
@@ -2996,36 +2888,28 @@
         isProcessingRequest = false;
     }
 
-    // ✅ دالة مساعدة لمعالجة نجاح الجمع
     function handleCashoutSuccess(profitAmount) {
         console.log('💰✅ معالجة نجاح الجمع:', profitAmount);
         
-        // ✅ تعيين الحالة النهائية
         setGameFinalized(true);
         
-        // ✅ تشغيل الصوت
         audioManager.resume();
         audioManager.playCashoutSound();
 
         const finalProfit = parseFloat(profitAmount) || 0;
         
-        // ✅ تحديث حالة اللعبة
         gameActive = false;
         userBalance += finalProfit;
         pendingProfit = 0;
         currentFloor = 0;
         currentMultiplier = 0;
 
-        // ✅ مسح التخزين المؤقت
         clearGameStateCache();
 
-        // ✅ عرض الإشعار
         showNotification(`💰 تم جمع ${Math.floor(finalProfit).toLocaleString()} SYP بنجاح! 💰`, 'cashout');
 
-        // ✅ تأثير كونفيتي
         createConfetti(40);
 
-        // ✅ إعادة تعيين اللعبة
         resetGameState();
         showBetSelection();
         document.getElementById('teaserOverlay').classList.remove('show');
@@ -3039,7 +2923,6 @@
         updateUI();
         updateGameStatus('💰 تم الجمع بنجاح', 'info');
         
-        // ✅ تحميل الحالة الجديدة بعد تأخير بسيط
         setTimeout(async () => {
             await loadGameState();
         }, 500);
@@ -3478,6 +3361,45 @@
     }
 
     // ================================================================
+    //                      الحصول على USER_ID
+    // ================================================================
+    function getUserId() {
+        const params = new URLSearchParams(window.location.search);
+        let id = params.get('user_id') || params.get('userId') || params.get('id');
+        
+        if (id && !isNaN(id)) {
+            USER_ID = parseInt(id);
+            localStorage.setItem('spinix_user_id', USER_ID);
+            console.log('✅ USER_ID من الرابط:', USER_ID);
+            return USER_ID;
+        }
+        
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const user = window.Telegram.WebApp.initDataUnsafe?.user;
+                if (user && user.id) {
+                    USER_ID = user.id;
+                    localStorage.setItem('spinix_user_id', USER_ID);
+                    console.log('✅ USER_ID من Telegram:', USER_ID);
+                    return USER_ID;
+                }
+            }
+        } catch (e) {
+            console.warn('Telegram WebApp not available');
+        }
+        
+        id = localStorage.getItem('spinix_user_id');
+        if (id) {
+            USER_ID = parseInt(id);
+            console.log('✅ USER_ID من localStorage:', USER_ID);
+            return USER_ID;
+        }
+        
+        console.error('❌ لا يمكن الحصول على USER_ID');
+        return null;
+    }
+
+    // ================================================================
     //                      تهيئة اللعبة
     // ================================================================
     async function initGame() {
@@ -3513,7 +3435,6 @@
 
             updateProgress(60, 'جاري تحميل حالة اللعبة...');
 
-            // ✅ محاولة استعادة الحالة من التخزين المؤقت
             const cachedState = loadGameStateFromCache();
             if (cachedState && restoreGameState(cachedState)) {
                 showNotification('🔄 تم استئناف جولتك السابقة', 'info', 3000);
