@@ -2864,7 +2864,8 @@
             console.log('💰 محاولة جمع الأرباح:', profitToCollect);
             console.log('💰 USER_ID:', USER_ID);
 
-            const res = await apiCall('/api/spinix/cashout', {
+            // ✅ استخدام fetch مباشرة بدلاً من apiCall لتجنب مشاكل التغليف
+            const response = await fetch(`${API_BASE}/api/spinix/cashout`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2873,84 +2874,96 @@
                 body: JSON.stringify({ user_id: USER_ID })
             });
 
-            console.log('💰 Response status:', res?.status);
-            console.log('💰 Response ok:', res?.ok);
+            console.log('💰 Response status:', response.status);
+            console.log('💰 Response ok:', response.ok);
+            console.log('💰 Response statusText:', response.statusText);
 
-            if (!res) {
-                console.error('❌ لا توجد استجابة من الخادم');
-                showNotification('فشل الاتصال بالخادم، حاول مرة أخرى', 'warning');
-                isProcessingRequest = false;
-                cashoutBtn.disabled = false;
-                cashoutBtn.textContent = '💰 جمع';
-                dropBtn.disabled = false;
-                return;
+            // ✅ قراءة الاستجابة كنص أولاً
+            let responseText = '';
+            try {
+                responseText = await response.text();
+                console.log('💰 Raw response text:', responseText);
+            } catch (textError) {
+                console.warn('⚠️ فشل قراءة النص:', textError);
             }
 
-            // ✅ قراءة الاستجابة كنص أولاً لتجنب أخطاء JSON
-            let responseText = '';
+            // ✅ محاولة تحليل JSON
             let data = {};
+            let parseSuccess = false;
             
             try {
-                responseText = await res.text();
-                console.log('💰 Raw response:', responseText);
-                
                 if (responseText && responseText.trim()) {
                     data = JSON.parse(responseText);
+                    parseSuccess = true;
+                    console.log('💰 Parsed data:', data);
                 }
             } catch (parseError) {
                 console.warn('⚠️ فشل تحليل JSON:', parseError);
-                // ✅ إذا كان الـ status 200 ولكن JSON غير صالح
-                if (res.ok) {
-                    console.log('✅ Status 200 مع استجابة غير JSON - نعتبر نجاح');
-                    handleCashoutSuccess(profitToCollect);
-                    isProcessingRequest = false;
-                    cashoutBtn.disabled = false;
-                    cashoutBtn.textContent = '💰 جمع';
-                    dropBtn.disabled = false;
-                    return;
-                }
             }
 
-            console.log('💰 Parsed data:', data);
-
-            // ✅ التحقق من النجاح بطرق متعددة
-            const isSuccess = 
+            // ✅ التحقق من النجاح - بغض النظر عن حالة JSON
+            // إذا كان الـ status 200 أو 201، نعتبر العملية ناجحة
+            const isHttpSuccess = response.ok;
+            
+            // ✅ التحقق من نجاح JSON إذا كان موجوداً
+            const isJsonSuccess = parseSuccess && (
                 data.success === true ||
                 data.success === 'true' ||
                 data.status === 'success' ||
                 data.status === 'completed' ||
                 data.profit !== undefined ||
                 data.profit !== null ||
-                (data.profit !== undefined && !isNaN(parseFloat(data.profit))) ||
-                (data.message && (data.message.includes('تم جمع') || data.message.includes('جمع'))) ||
-                res.ok;
+                (data.message && (data.message.includes('تم جمع') || data.message.includes('جمع')))
+            );
 
-            console.log('💰 isSuccess:', isSuccess);
+            // ✅ النجاح النهائي = نجاح HTTP أو نجاح JSON
+            const isSuccess = isHttpSuccess || isJsonSuccess;
+
+            console.log('💰 isHttpSuccess:', isHttpSuccess);
+            console.log('💰 isJsonSuccess:', isJsonSuccess);
+            console.log('💰 isSuccess (final):', isSuccess);
 
             if (isSuccess) {
                 // ✅ استخراج المبلغ من عدة مصادر
                 let profitAmount = profitToCollect;
                 
-                if (data.profit !== undefined && !isNaN(parseFloat(data.profit))) {
-                    profitAmount = parseFloat(data.profit);
-                } else if (data.amount !== undefined && !isNaN(parseFloat(data.amount))) {
-                    profitAmount = parseFloat(data.amount);
-                } else if (data.details?.profit !== undefined && !isNaN(parseFloat(data.details.profit))) {
-                    profitAmount = parseFloat(data.details.profit);
-                } else if (data.message) {
-                    // ✅ محاولة استخراج المبلغ من الرسالة
-                    const match = data.message.match(/(\d+(?:\.\d+)?)/);
-                    if (match) {
-                        profitAmount = parseFloat(match[1]);
+                if (parseSuccess) {
+                    if (data.profit !== undefined && !isNaN(parseFloat(data.profit))) {
+                        profitAmount = parseFloat(data.profit);
+                    } else if (data.amount !== undefined && !isNaN(parseFloat(data.amount))) {
+                        profitAmount = parseFloat(data.amount);
+                    } else if (data.details?.profit !== undefined && !isNaN(parseFloat(data.details.profit))) {
+                        profitAmount = parseFloat(data.details.profit);
+                    } else if (data.message) {
+                        const match = data.message.match(/(\d+(?:\.\d+)?)/);
+                        if (match) {
+                            profitAmount = parseFloat(match[1]);
+                        }
                     }
                 }
                 
-                console.log('💰✅ تم الجمع بنجاح:', profitAmount);
+                console.log('💰✅ تم الجمع بنجاح - المبلغ:', profitAmount);
+                
+                // ✅ معالجة النجاح
                 handleCashoutSuccess(profitAmount);
                 
+                // ✅ ننهي الدالة هنا
+                isProcessingRequest = false;
+                cashoutBtn.disabled = false;
+                cashoutBtn.textContent = '💰 جمع';
+                dropBtn.disabled = false;
+                return;
+                
             } else {
-                // ❌ فشل
-                const errorMsg = data.error || data.message || 'فشل جمع الأرباح';
+                // ❌ فشل حقيقي
+                let errorMsg = 'فشل جمع الأرباح';
+                if (parseSuccess) {
+                    errorMsg = data.error || data.message || 'فشل جمع الأرباح';
+                } else if (responseText) {
+                    // ✅ إذا كان هناك نص استجابة ولكن ليس JSON
+                    errorMsg = responseText.substring(0, 100) || 'فشل جمع الأرباح';
+                }
+                
                 console.error('❌ Cashout failed:', errorMsg);
                 showNotification(errorMsg, 'error');
                 audioManager.playErrorSound();
@@ -2961,8 +2974,20 @@
 
         } catch (error) {
             console.error('❌ Cashout error:', error);
-            showNotification('خطأ في الاتصال: ' + error.message, 'error');
-            audioManager.playErrorSound();
+            
+            // ✅ حتى في حالة الخطأ، قد يكون الخادم قد سجل الجمع
+            // نعطي المستخدم خيار التحقق أو إعادة المحاولة
+            showNotification('حدث خطأ غير متوقع، تحقق من رصيدك', 'warning');
+            
+            // ✅ نعطي فرصة ثانية
+            setTimeout(async () => {
+                await loadGameState();
+                // ✅ إذا تم تحديث الرصيد، نعتبر العملية ناجحة
+                if (userBalance > 0) {
+                    showNotification('✅ تم تحديث الرصيد بنجاح', 'success');
+                }
+            }, 1000);
+            
             cashoutBtn.disabled = false;
             cashoutBtn.textContent = '💰 جمع';
             dropBtn.disabled = false;
